@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Android on Natrium Theme</title>
-    <link>https://example.org/categories/android/</link>
+    <link>https://smartzheng.github.io/categories/android/</link>
     <description>Recent content in Android on Natrium Theme</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 23 Jul 2019 15:09:52 +0800</lastBuildDate>
     
-	<atom:link href="https://example.org/categories/android/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://smartzheng.github.io/categories/android/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>SwipeRefreshLayout手动调用setRefresh(true)不起作用的原因</title>
-      <link>https://example.org/posts/first/</link>
+      <link>https://smartzheng.github.io/posts/first/</link>
       <pubDate>Tue, 23 Jul 2019 15:09:52 +0800</pubDate>
       
-      <guid>https://example.org/posts/first/</guid>
+      <guid>https://smartzheng.github.io/posts/first/</guid>
       <description>1.现象 往往发生这个现象是出现在onCreate中去调用这个方法,会发现不起作用.原因是在onCreate方法中view未加载完全,所以不能显示.
 2.解决
 方法一:用post队列
