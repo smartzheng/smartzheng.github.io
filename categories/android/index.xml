@@ -1,28 +1,167 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Android on Natrium Theme</title>
+    <title>Android on smartzheng</title>
     <link>https://smartzheng.github.io/categories/android/</link>
-    <description>Recent content in Android on Natrium Theme</description>
+    <description>Recent content in Android on smartzheng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jul 2019 15:09:52 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 31 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/categories/android/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>SwipeRefreshLayout手动调用setRefresh(true)不起作用的原因</title>
-      <link>https://smartzheng.github.io/posts/first/</link>
-      <pubDate>Tue, 23 Jul 2019 15:09:52 +0800</pubDate>
+      <title>Java并发：多线程安全总结</title>
+      <link>https://smartzheng.github.io/posts/java%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smartzheng.github.io/posts/first/</guid>
-      <description>1.现象 往往发生这个现象是出现在onCreate中去调用这个方法,会发现不起作用.原因是在onCreate方法中view未加载完全,所以不能显示.
-2.解决
-方法一:用post队列
-refreshLayout.post(new Runnable() { @Override public void run() { refreshLayout.setRefreshing(true); onRefresh();//是否触发onRefresh中的方法  } });  方法二:手动设置加载图形的偏移量(相对于手动去初始化对应的view)
-refresh.setProgressViewOffset(false, 50, 100); //依次代表:是否缩放加载圆圈,偏移量顶部y值,偏移量底部y值 refresh.setRefreshing(true);  方法三:手动监听SwipeRefreshLayout的measure方法完成后再去setRefreshing(true)
-rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() { @Override public void onGlobalLayout() { root.getViewTreeObserver().removeGlobalOnLayoutListener(this); mRefreshLayout.setRefreshing(true); } });  </description>
+      <guid>https://smartzheng.github.io/posts/java%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</guid>
+      <description>###1.并发基础
+定义：一个cpu“同时”处理多个任务，而多个线程都在争取这个cpu资源
+####1.1 优点
+ 充分发挥多核CPU的计算能力
+ 方便进行业务拆分，提升应用性能  ####1.2 缺点
+ 频繁切换上下文耗时
+ 线程安全问题：原子性、有序性、重排序  ####1.3 相关概念
+ 同步、异步：分别在于是否被调用的方法结束后，调用者后面的代码才能执行 并发、并行：前者指一个cpu通过切换时间片“同时”处理多个任务；后者指真正意义上的同时进行，需要多个CPU 阻塞、非阻塞：如果一个线程占用了临界资源，那么其他线程只有等待该资源释放方可继续执行，此时等待的线程被挂起，即阻塞；非阻塞相反，强调没有一个线程可以阻塞其他线程，所有的线程都会尝试地往前运行 临界区：表示一种可以被多个线程使用公共资源或者共享数据，当一个线程占用时其他线程必须等待  ###2.线程基础 ####2.1 创建线程的方式
+ 继承Thread，重新run方法（局限：只能单继承） 实现Runable，传给Thread 实现callable，submit到线程池  ####2.2 线程的状态
+ NEW 初识状态，被创建但未start() RUNNABLE 运行状态（实际上在系统调度情况下可以分为RUNNING和READY状态） BLOCKED 阻塞状态，线程阻塞于锁 WAITING 等待转态，等待其他线程通知或中断 TIMED_WAITING 超时等待，当超时等待时间到达后，线程会切换到Runable的状态 TERMINATED 终止状态，线程执行完毕  ####2.3 线程状态基本操作
+2.3.1 stop
+ 暴力停止，已被废弃
+  2.3.2 interrupt / isInterrupted / interrupted
+ interrupt：中断该线程对象，如果该线程调用了wait()/wait(long)/sleep()/sleep(long)/join()/join(long)方法时会抛出InterruptedException并清除标志位（线程的中断可以理解为一个标志位，表示一个运行中的线程是否被其他线程中断） isInterrupted：判断该线程是否被中断，不会清除标志位
+ interrupted：判断该线程是否被中断，会清除标志位
+  2.3.3 join</description>
+    </item>
+    
+    <item>
+      <title>Navigation返回Fragment重走onCreateView问题</title>
+      <link>https://smartzheng.github.io/posts/navigation%E8%BF%94%E5%9B%9Efragment%E9%87%8D%E8%B5%B0oncreateview%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/navigation%E8%BF%94%E5%9B%9Efragment%E9%87%8D%E8%B5%B0oncreateview%E9%97%AE%E9%A2%98/</guid>
+      <description>在使用Navigation的过程中，发现其页面跳转效率确实很不错，XML管理页面跳转逻辑以及fragment之间的参数传递使用起来都很方便，但是一个很大的问题就是在fragment出栈返回上一页时，上一个fragment会重走onCreateView方法。而我们的很多view和数据初始化工作都是在onViewCreated之后进行的，导致的结果是每次回上一个页面可能会重新刷新，这一点体验很差。这里提供一个方法来避免每次重新创建view。
+ 编写一个BaseNavigationFragment:
+class BaseNavigationFragment : BaseFragment() { protected var isNavigationViewInit = false//记录是否已经初始化过一次视图 private var lastView: View? = null//记录上次创建的view override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { //如果fragment的view已经创建则不再重新创建 if (lastView == null) { lastView = super.onCreateView(inflater, container, savedInstanceState) } return lastView } override fun onViewCreated(view: View, savedInstanceState: Bundle?) { if(!isNavigationViewInit){//初始化过视图则不再进行view和data初始化 super.onViewCreated(view, savedInstanceState) initView(view) initData() isNavigationViewInit = true } } }  核心思路在上面的注释，即保存上次创建的view，返回上一页再次走onCreateView时直接将其返回，并且在onViewCreated方法中不再进行初始化工作。
+leak canary可能会提示lastView内存泄漏，忽略即可。</description>
+    </item>
+    
+    <item>
+      <title>RxJava基本语法源码分析</title>
+      <link>https://smartzheng.github.io/posts/rxjava%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Sun, 05 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/rxjava%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>最近看了下网上的RxJava源码分析，发现所基于的源码版本和最新的略有不同，于是自己动手翻阅了一下最新的源码版本（rxjava:2.2.8，rxandroid:2.1.1），并写分析博客作分享。
+//示例代码 private static void rxJavaTest() { Observable.create(new ObservableOnSubscribe&amp;lt;String&amp;gt;() { @Override public void subscribe(ObservableEmitter&amp;lt;String&amp;gt; emitter) { //1 emitter.onNext(&amp;quot;onNext&amp;quot;); emitter.onComplete(); } }).subscribe(new Observer&amp;lt;String&amp;gt;() { @Override public void onSubscribe(Disposable d) { //2 Log.d(TAG, &amp;quot;onSubscribe&amp;quot;); } @Override public void onNext(String s) { //3 Log.d(TAG, s); } @Override public void onError(Throwable e) { //4 Log.d(TAG, &amp;quot;onError&amp;quot;); } @Override public void onComplete() { //5 Log.d(TAG, &amp;quot;onComplete&amp;quot;); } }); }  上面RxJava最简单的使用，主要涉及被观察者Observable、观察者Observer和事件订阅subscribe()三个角色。
+首先分析Observable的创建过程，即Observable的create()方法：
+public static &amp;lt;T&amp;gt; Observable&amp;lt;T&amp;gt; create(ObservableOnSubscribe&amp;lt;T&amp;gt; source) { ObjectHelper.</description>
+    </item>
+    
+    <item>
+      <title>Android启动优化最佳方案：去启动页和异步初始化</title>
+      <link>https://smartzheng.github.io/posts/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/</link>
+      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/</guid>
+      <description>项目地址：https://github.com/smartzheng/asyncstarter
+随着APP的日渐增大，集成的三方库也越来越多，导致APP的启动极其缓慢。最近在慕课get了一些不错的优化方案，将原来的冷启动时间大概提升30%。 启动的时间监测可以直接用adb命令实现： &amp;gt;adb shell am start -W PackageName/ActivityName
+下面是我未优化之前的项目debug版本启动时间（华为p10plus），这里介绍一下几个概念
+ThisTime：最后一个Activity启动耗时 TotalTime：所有Activity启动耗时 WaitTimeTime：AMS启动Activity启动耗时
+可以看到耗时接近1.3s多（1.3s不算长，但是往往应用加固之后还会慢大一截）。
+-&amp;gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category. LAUNCHER]cmp=com.smartzheng/.activity.MainActivity } Warning: Activity not started, its current task has been brought to the front Status: ok Activity: com.uoko.mlgb/.mvp.view.activity.MainActivity ThisTime: 600 TotalTime: 1301 WaitTime: 1330 Complete  优化一：去掉启动页 IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉之后可以一定幅度减少启动时间。
+我的做法是直接删除SplashActivity，将MainActivity设为启动页。然后在manifests中将其theme设为启动时的theme：
+&amp;lt;activity android:name=&amp;quot;.activity.MainActivity&amp;quot; android:configChanges=&amp;quot;screenSize|keyboardHidden|orientation&amp;quot; android:launchMode=&amp;quot;singleTask&amp;quot; android:screenOrientation=&amp;quot;portrait&amp;quot; android:theme=&amp;quot;@style/SplashTheme&amp;quot;&amp;gt; &amp;lt;intent-filter&amp;gt; &amp;lt;action android:name=&amp;quot;android.intent.action.MAIN&amp;quot;/&amp;gt; &amp;lt;/intent-filter&amp;gt; &amp;lt;intent-filter&amp;gt; &amp;lt;data android:scheme=&amp;quot;growing.a4ce2f9edf74350a&amp;quot;/&amp;gt; &amp;lt;action android:name=&amp;quot;android.</description>
+    </item>
+    
+    <item>
+      <title>ActivityManagerService简析</title>
+      <link>https://smartzheng.github.io/posts/activitymanagerservice%E7%AE%80%E6%9E%90/</link>
+      <pubDate>Tue, 05 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/activitymanagerservice%E7%AE%80%E6%9E%90/</guid>
+      <description>####AMS在Android系统中扮演很重要的角色，主要负责系统中四大组件的启动、切换、调度及应用进程的管理和调度等工作，其职责与操作系统中的进程管理和调度模块相类似。当发起进程启动或者组件启动时，都会通过Binder通信机制将请求传递给AMS，AMS再做统一处理。以下以启动Activity为例简析AMS的管理工作。
+#####AMS在SystemServer进程中启动，SystemServer的main方法会调用startBootstrapServices方法启动AMS #####7.0及之前，AMS通过代理模式来完成Binder通信： Activity的直接管理者是ActivityManager，但最终管理者是AMS：当Client端发起启动Activity请求后，AM会通过ActivityManagerNative的getDefault来得到其内部类ActivityManagerProxy的单例对象，即AMS在客户端（用户进程）的代理对象，作为代理类，AMP中含有AMS的引用，AMN和AMP都实现了IActivityManager，IActivityManager继承了IInterface（实现Binder通信的必备条件），所以AMP具备了Binder通信能力，statActivity最终会通过AMP中的AMS引用来调用AMS的transact方法，向AMS发送启动Activity请求，并将序列化数据传递给AMS，随后AMS的子类AMN的onTransact会执行，它会将具体的启动工作交给ActivityStater来负责。 具体流程及关系图如下： #####8.0之后，AMS通过AIDL完成Binder通信。具体实现比较简单。
+#####ActivityRecord、TaskRecord和ActivityStack AMS中主要涉及这三个数据结构： ActivityRecord：存储Activity的相关信息，比如AndroidMainifes的节点信息，启动Activity的包名，所在进程，图标主题标识符，当前Activity状态，所属TaskRecord等。 TaskRecord：描述一个Activity任务栈，主要维护了一个按历史顺序排列的ArrayList，并包含此任务栈所属的ActivityStack等。 ActivityStack：一个管理系统中所有Activity的管理类，真实交由ActivityStackSupervisor管理，内部维护了Activity的所有状态，并对不同状态的Activity进行分类管理，如最近启动的Activity，正在暂停的Activity等。 #####可以借助下图理解三者关系： </description>
+    </item>
+    
+    <item>
+      <title>Android进程启动流程简析</title>
+      <link>https://smartzheng.github.io/posts/android%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E7%AE%80%E6%9E%90/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/android%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E7%AE%80%E6%9E%90/</guid>
+      <description>自己画了一张简单流程图： 启动一个新进程主要涉及四步： 1、发送启动进程的需求，可能是Launcher启动一个新的APP，或者APP开启独立进程或其他APP
+2、发送需求的进程通过Binder通信机制与SystemServer进程通信，通过运行在其中的ActivityManagerService来执行下一步流程
+3、AMS通过Socket将创建新进程的请求发送给Zygote进程，在Zygote启动后会执行runSelectLoop方法来等待创建进程请求，当接收到AMS的请求之后fork出新进程，并创建Binder线程池，将新进程的主线程加入到其中，这样新进程也可以使用Binder通信机制了。
+4、Zygote进程通过Binder与新开启的应用进程通信，ActivityThread的内部类ApplicationThread作为跨进程通信的桥梁（8.0之后采用AIDL实现，之前使用的是代理模式），ApplicationThread运行在Binder线程中，所以最后需要通过线程切换（H.sendMessage）来进入主线程
+###由此可见，一个新进程的创建涉及4个进程，3次跨进程通信，2次为Binder，1次为Sockt</description>
+    </item>
+    
+    <item>
+      <title>利用SpannableString富文本方式设置圆角标签背景</title>
+      <link>https://smartzheng.github.io/posts/%E5%88%A9%E7%94%A8spannablestring%E5%AF%8C%E6%96%87%E6%9C%AC%E6%96%B9%E5%BC%8F%E8%AE%BE%E7%BD%AE%E5%9C%86%E8%A7%92%E6%A0%87%E7%AD%BE%E8%83%8C%E6%99%AF/</link>
+      <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/%E5%88%A9%E7%94%A8spannablestring%E5%AF%8C%E6%96%87%E6%9C%AC%E6%96%B9%E5%BC%8F%E8%AE%BE%E7%BD%AE%E5%9C%86%E8%A7%92%E6%A0%87%E7%AD%BE%E8%83%8C%E6%99%AF/</guid>
+      <description>####项目中遇到一个需求,需要在商品标题加上标签,而标签是客户可以后台配置的,所以不是用的图片,而是用的文字.如下图: ####众所周知,在Android中,View都是呈方形布置的,所以如果标签和文字如果不是同一个View,那么如果文字换行,就会出现标签和TextView分别在左右两边的效果: ####经过思考和查阅资料,发现可以用SpannableString设置背景,并通过重写ReplacementSpan替换原来的BackgroundColorSpan来实现圆角标签. ####下面是代码:
+Activity: (goodsTags为标签文字集合,即上图的&amp;rdquo;促&amp;rdquo;,&amp;ldquo;九&amp;rdquo;,&amp;ldquo;八&amp;rdquo;&amp;hellip;goodsName为商品名字
+for (int i = 0; i &amp;lt; goodsTags.size(); i++) { //为了显示效果在每个标签文字前加两个空格,后面加三个空格(前两个和后两个填充背景,最后一个作标签分割) goodsName.insert(0, &amp;quot; &amp;quot; + goodsTags.get(i).getTags_name() + &amp;quot; &amp;quot;); int start = 0; int end = 5; //稍微设置标签文字小一点 goodsName.setSpan(new RelativeSizeSpan(0.9f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE); //设置圆角背景 goodsName.setSpan(new RoundBackgroundColorSpan(Color.parseColor(&amp;quot;#&amp;quot; + goodsTags.get(i).getTags_color()),Color.WHITE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE); }  自定义RoundBackgroundColorSpan:
+public class RoundBackgroundColorSpan extends ReplacementSpan { private int bgColor; private int textColor; public RoundBackgroundColorSpan(int bgColor, int textColor) { super(); this.bgColor = bgColor; this.</description>
+    </item>
+    
+    <item>
+      <title>bilibili开源库ijkPalyer的集成和使用</title>
+      <link>https://smartzheng.github.io/posts/bilibili%E5%BC%80%E6%BA%90%E5%BA%93ijkpalyer%E7%9A%84%E9%9B%86%E6%88%90%E5%92%8C%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 08 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/bilibili%E5%BC%80%E6%BA%90%E5%BA%93ijkpalyer%E7%9A%84%E9%9B%86%E6%88%90%E5%92%8C%E4%BD%BF%E7%94%A8/</guid>
+      <description>最近在我的个人项目中集成了bilibili视频播放库ijkPalyer，网上的很多教程所写的是之前版本的使用方法，官方文档也没有写的太清楚，所以在此做一个简单的介绍。 个人项目：一个基于MVP，dagger2，RXJava，Retrofit，Glide，集成bilibili的ijkPlayer，用Bmob实现后台服务，遵循Material Design风格的APP，数据主要来自豆瓣。欢迎star。 地址：https://github.com/smartzheng/LoveDouBan
+1.引入 之前的版本似乎需要进行源码编译，现在直接引入即可。ijkPalyer地址：https://github.com/Bilibili/ijkplayer 最简单的方式，直接在app下的gradle添加：
+# required allprojects { repositories { jcenter() } } dependencies { # required, enough for most devices. compile &#39;tv.danmaku.ijk.media:ijkplayer-java:0.8.4&#39; compile &#39;tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4&#39; # Other ABIs: optional compile &#39;tv.danmaku.ijk.media:ijkplayer-armv5:0.8.4&#39; compile &#39;tv.danmaku.ijk.media:ijkplayer-arm64:0.8.4&#39; compile &#39;tv.danmaku.ijk.media:ijkplayer-x86:0.8.4&#39; compile &#39;tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.4&#39; # ExoPlayer as IMediaPlayer: optional, experimental compile &#39;tv.danmaku.ijk.media:ijkplayer-exo:0.8.4&#39; }  如果对源码有兴趣，可以将项目下的以下指出的文件夹（ijkplayer-example可根据需求进行选择，下面会进行介绍）引入到app中： 其中tools直接拷贝，其他文件夹以module的形式引入，再添加为项目依赖即可。
+ijkPlayer的定制性比较强，在官方地址下有一个sample，可以将其直接以项目的形式引入至自己的项目中进行使用，其中包括了不少官方写好的工具类和控件。 当然，为了减小apk大小，直接引入一个项目不是好选择，所以我选择复制粘贴需要的代码，如下： 上图中的wiget目录可全部拷贝入自己的项目中，拷贝完成之后会缺少很多资源文件。所以需要再根据报错信息分别将res目录下的相关资源和声明复制到对应的目录或文件中： layout直接拷贝，values复制内容至自己项目对应的values文件中去，并注意删除重复和未使用的声明。
+至此，引入完毕。 2.简单使用 1）初始化：官方提供以下两种方式进行初始化操作，在应用初始化或者使用视频播放的activity初始化时调用以下方法。
+ //第一：默认初始化 Bmob.initialize(this, &amp;quot;e8f177acd86e0fde391b2af19243fc1b&amp;quot;); // 注:自v3.5.2开始，数据sdk内部缝合了统计sdk，开发者无需额外集成，传渠道参数即可，不传默认没开启数据统计功能 //Bmob.initialize(this, &amp;quot;Your Application ID&amp;quot;,&amp;quot;bmob&amp;quot;); //第二：自v3.4.7版本开始,设置BmobConfig,允许设置请求超时时间、文件分片上传时每片的大小、文件的过期时间(单位为秒)， //BmobConfig config =new BmobConfig.</description>
+    </item>
+    
+    <item>
+      <title>在Windows配置Centos服务器实现Android项目远程打包</title>
+      <link>https://smartzheng.github.io/posts/%E5%9C%A8windows%E9%85%8D%E7%BD%AEcentos%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0android%E9%A1%B9%E7%9B%AE%E8%BF%9C%E7%A8%8B%E6%89%93%E5%8C%85/</link>
+      <pubDate>Fri, 29 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/%E5%9C%A8windows%E9%85%8D%E7%BD%AEcentos%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0android%E9%A1%B9%E7%9B%AE%E8%BF%9C%E7%A8%8B%E6%89%93%E5%8C%85/</guid>
+      <description>####0.需求 平时开发测试环节中涉及多次回归测试，于是考虑对服务器进行配置，当开发完后每次push代码，测试部门即可从服务器打包pull进行测试。 ####1.连接服务器 我用的是PuTTY 进行连接，软件可自行Google下载，安装完成之后填写id和password即可登录到CentOs服务器。（本文CentOS的版本为6.8，且已配置好JDK） ####2.配置AndroidSDK #####1）下载sdktools - 进入etc，创建文件夹
+cd /etc  mkdir androidSdk   下载，解压
+wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip  unzip sdk-tools-linux-3859397.zip   #####2）配置环境变量
+- 打开etc目录下的profile
+cd etc  vi profile   打开后输入i进入编辑模式，在文件末尾插入以下命令
+export PATH USER LOGNAME MAIL HOSTNAME HISTSIZE HISTCONTROL  export PATH=$PATH:/etc/androidSdk/tools/bin  esc退出编辑，:w进行保存，:q退出文件
+ 执行：source profile 生效
+ 执行sdkmanager检查是否安装成功 #####3）安装必要的package
+ 根据需要执行安装以下的package build-tools;25.0.3
+emulator
+extras;android;m2repository patcher;v4
+platform-tools
+platforms;android-25
+tools
+安装命令为：sdkmanager &amp;quot;build-tools;26.0.0&amp;quot;
+将命令中的build-tools;26.0.0依次替换为上面的包名称+版本号可依次安装，也可选择需要的版本。
+#####4）配置platform tools
+ 在etc/profile中添加以下命令，方法同上面配置tools</description>
+    </item>
+    
+    <item>
+      <title>Android源码分析之浅析Android系统启动过程</title>
+      <link>https://smartzheng.github.io/posts/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%B5%85%E6%9E%90android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Wed, 27 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/posts/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%B5%85%E6%9E%90android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/</guid>
+      <description>#####0.Android的两个世界 * Android系统存在两个世界：Java世界和Native（C或者C++的世界）世界，而大部分应用层开发者除了少数时候用到JNI之外，接触到的通常只是Java世界。Android系统基于Linux内核，最早当然是Native世界。在启动电源将ROM加载到RAM之后，BootLoader启动系统，进入Android内核层。内核启动时，初始化进程管理、内存管理，加载Display,Camera Driver，Binder Driver等相关工作，并创建守护进程。至此即完成底层初始化，进入Native层。
+先放一张自己画的流程图 #####1.init进程
+* init进程是Linux系统用户空间的第一个进程，在系统启动时会首先被启动，其对应的文件为init.c。 * init进程的主要任务就是解析配置文件，启动zygote进程及属性服务（propertyservice），（属性服务类似于Windows系统的注册表，存储一些key/value的键值对。应用程序可以通过这个属性机制设置属性。当系统重启或应用重启时从中读取数据进行恢复，一般运用于系统应用。此处不作过多讨论）。并且在此之后进入一个死循环，等待处理来自socket和属性服务器的事件。我们重点在zygote的启动。 * 在init.c的service_start()方法中，调用fork()函数创建一个子线程（fork是Linux创建线程的一种方式），并在此线程中进入到app_process的main函数中。实际上zygote的原名就叫做app_service,只不过在调用的过程中被改名为zygote（受精卵），原型app_service对应的源文件是App_main.cpp。 #####2.App_main.cpp - App_main.cpp文件的入口为main()，在主方法中调用runtime.start()；runtime的类型为APPRuntime，所以zygote的主要功能交给了APPRuntime处理。 #####3.AppRuntime - AppRuntime由AndroidRuntime派生而来，在start()方法中主要做了三件事情：startVm()，startReg()和CallStaticVoidMethod，即创建虚拟机,注册JNI函数,再通过JNI调用ZygoteInit.java的main()函数，由此开创了Android的Java世界。 #####4.zygote - 在ZygoteInit类的main()内部，进行了4个重要操作： &amp;gt; ①建立IPC通信服务端：registerZygoteSocket; zygote及其他系统程序的通信并未使用Binder，而是使用Socket，此方法即是建立这个Socket的服务端。 &amp;gt; ②预加载类和资源：preloadClasses和preloadResources；通过反射原理对系统所用的类和资源进行预加载，缺点是导致了Android系统启动较慢。
+&amp;gt; ③启动system_server进程：startSystemServer()； system_server是Java世界的核心，即framework的核心。如果system_server死亡，则zygote将会自杀。 startSystemServer()最终也是通过zygote的分裂（fork）而来（最终实现是在native层）。 &amp;gt; ④等待处理请求：runSelectLoopMode()；用于处理客户连接和客户请求。
+ 在处理完以上的主要任务后，zygote将暂时退出舞台等待被唤醒执行任务（fork下一个进程），而后面的任务则交给了他分裂的重要进程system_server进行执行； #####5.system_server system_server(下简称SS)的产生是在native层（dalvik_system_Zygote.c中），在创建之后调用handleSystemServerProcess完成自己的使命。期间会先与Binder通信系统建立联系，这样SS就能使用Binder。辗转之后system_server最终调用了Java层的com.android.sever.SystemServer类的main函数。 在SystemServer类的main函数中，分别调用了native层的init1()和Java层的init2()。init1()创建了一些系统服务，并且把调用线程加入到Binder通信中；init2()启动了ServerThread线程，启动系统的各项服务，如PowerManager,WatchDog,WindowManager，ActivityManager，可谓十分重要。  ####至此，Android启动的大致流程介绍完成，前面提到，zygote在分裂出SS之后，会runSelectLoopMode来等待处理客户端的消息，比如创建新进程或者说启动新的应用的请求。下篇文章再对此进行分析。</description>
     </item>
     
   </channel>

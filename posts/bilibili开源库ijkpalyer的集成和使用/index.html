@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.55.6" />
+
+
+<title>bilibili开源库ijkPalyer的集成和使用 - smartzheng</title>
+<meta property="og:title" content="bilibili开源库ijkPalyer的集成和使用 - smartzheng">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://smartzheng.github.io/css/main.css" media="all">
+<link rel="stylesheet" href="https://smartzheng.github.io/css/fonts.css">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="https://smartzheng.github.io/" class="nav-logo">
+    <img src="https://smartzheng.github.io/images/logo.png" 
+         width="50" 
+         height="50" 
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/categories">Categories</a></li>
+    
+    <li><a href="https://github.com/smartzheng">About</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+  <article class="article">
+    <h1 class="article-title">bilibili开源库ijkPalyer的集成和使用</h1>
+    
+
+    <div class="article-content">
+      <p>最近在我的个人项目中集成了bilibili视频播放库ijkPalyer，网上的很多教程所写的是之前版本的使用方法，官方文档也没有写的太清楚，所以在此做一个简单的介绍。
+个人项目：一个基于MVP，dagger2，RXJava，Retrofit，Glide，集成bilibili的ijkPlayer，用Bmob实现后台服务，遵循Material Design风格的APP，数据主要来自豆瓣。欢迎star。
+地址：<a href="https://github.com/smartzheng/LoveDouBan">https://github.com/smartzheng/LoveDouBan</a></p>
+
+<p>1.引入
+之前的版本似乎需要进行源码编译，现在直接引入即可。ijkPalyer地址：<a href="https://github.com/Bilibili/ijkplayer">https://github.com/Bilibili/ijkplayer</a>
+最简单的方式，直接在app下的gradle添加：</p>
+
+<pre><code># required
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+dependencies {
+    # required, enough for most devices.
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.4'
+
+    # Other ABIs: optional
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.4'
+
+    # ExoPlayer as IMediaPlayer: optional, experimental
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.4'
+}
+</code></pre>
+
+<p>如果对源码有兴趣，可以将项目下的以下指出的文件夹（ijkplayer-example可根据需求进行选择，下面会进行介绍）引入到app中：
+<img src="http://upload-images.jianshu.io/upload_images/2983970-622faf359ab4502a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
+其中tools直接拷贝，其他文件夹以module的形式引入，再添加为项目依赖即可。</p>
+
+<p>ijkPlayer的定制性比较强，在官方地址下有一个sample，可以将其直接以项目的形式引入至自己的项目中进行使用，其中包括了不少官方写好的工具类和控件。
+当然，为了减小apk大小，直接引入一个项目不是好选择，所以我选择复制粘贴需要的代码，如下：
+<img src="http://upload-images.jianshu.io/upload_images/2983970-edf8ac6b8486b906.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
+上图中的wiget目录可全部拷贝入自己的项目中，拷贝完成之后会缺少很多资源文件。所以需要再根据报错信息分别将res目录下的相关资源和声明复制到对应的目录或文件中：
+<img src="http://upload-images.jianshu.io/upload_images/2983970-4e4ca21654d4639d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
+layout直接拷贝，values复制内容至自己项目对应的values文件中去，并注意删除重复和未使用的声明。</p>
+
+<p>至此，引入完毕。
+2.简单使用
+1）初始化：官方提供以下两种方式进行初始化操作，在应用初始化或者使用视频播放的activity初始化时调用以下方法。</p>
+
+<pre><code>    //第一：默认初始化
+    Bmob.initialize(this, &quot;e8f177acd86e0fde391b2af19243fc1b&quot;);
+    // 注:自v3.5.2开始，数据sdk内部缝合了统计sdk，开发者无需额外集成，传渠道参数即可，不传默认没开启数据统计功能
+    //Bmob.initialize(this, &quot;Your Application ID&quot;,&quot;bmob&quot;);
+
+    //第二：自v3.4.7版本开始,设置BmobConfig,允许设置请求超时时间、文件分片上传时每片的大小、文件的过期时间(单位为秒)，
+    //BmobConfig config =new BmobConfig.Builder(this)
+    ////设置appkey
+    //.setApplicationId(&quot;Your Application ID&quot;)
+    ////请求超时时间（单位为秒）：默认15s
+    //.setConnectTimeout(30)
+    ////文件分片上传时每片的大小（单位字节），默认512*1024
+    //.setUploadBlockSize(1024*1024)
+    ////文件的过期时间(单位为秒)：默认1800s
+    //.setFileExpiration(2500)
+    //.build();
+    //Bmob.initialize(config);
+</code></pre>
+
+<p>2）布局：</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;android.support.v4.widget.DrawerLayout
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:id=&quot;@+id/drawer_layout&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+
+    &lt;!-- The main content view --&gt;
+    &lt;FrameLayout
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:background=&quot;@color/colorPrimary&quot;&gt;
+
+        &lt;com.zs.douban.customview.media.IjkVideoView
+            android:id=&quot;@+id/video_view&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;match_parent&quot;
+            android:layout_gravity=&quot;center&quot;&gt;
+
+        &lt;/com.zs.douban.customview.media.IjkVideoView&gt;
+
+        &lt;TextView
+            android:id=&quot;@+id/toast_text_view&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_gravity=&quot;left|center_vertical&quot;
+            android:background=&quot;@color/colorPrimary&quot;
+            android:padding=&quot;16dp&quot;
+            android:textSize=&quot;16sp&quot;
+            android:visibility=&quot;gone&quot;/&gt;
+
+        &lt;TableLayout
+            android:visibility=&quot;invisible&quot;
+            android:id=&quot;@+id/hud_view&quot;
+            android:layout_width=&quot;wrap_content&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:layout_gravity=&quot;right|center_vertical&quot;
+            android:background=&quot;@color/colorPrimary&quot;
+            android:padding=&quot;8dp&quot;/&gt;
+
+        &lt;android.support.v7.widget.Toolbar
+            android:id=&quot;@+id/toolbar&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:minHeight=&quot;?attr/actionBarSize&quot;
+            app:popupTheme=&quot;@style/ThemeOverlay.AppCompat.Light&quot;/&gt;
+    &lt;/FrameLayout&gt;
+
+    &lt;!-- The navigation drawer --&gt;
+    &lt;FrameLayout
+        android:id=&quot;@+id/right_drawer&quot;
+        android:layout_width=&quot;240dp&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:layout_gravity=&quot;right&quot;
+        android:background=&quot;@color/colorPrimary&quot;/&gt;
+&lt;/android.support.v4.widget.DrawerLayout&gt;
+</code></pre>
+
+<p>以上是我项目下的布局内容，可以根据需求自定义，但是需要引入com.zs.douban.customview.media.IjkVideoView，以及一个TableLayout，播放视频时TableLayout会显示对应的播放信息，如果不需要，可以设为invisible，但是如果不加入，会报错，可能需要修改源码才能避免。</p>
+
+<p>3）配置和播放</p>
+
+<pre><code>private void initPlayer() {
+    IjkMediaPlayer.loadLibrariesOnce(null);
+    IjkMediaPlayer.native_profileBegin(&quot;libijkplayer.so&quot;);
+    mVideoView = (IjkVideoView) findViewById(R.id.video_view);
+    mVideoView.setHudView(mHudView);//没有TableLayout此处会报空指针
+    AndroidMediaController controller = new AndroidMediaController(this, false);
+    mVideoView.setMediaController(controller);
+}
+
+private void play() {
+    String url = getIntent().getStringExtra(&quot;url&quot;);//设置播放地址
+    mVideoView.setVideoURI(Uri.parse(url));
+    mVideoView.start();
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+}
+</code></pre>
+
+<p>4)全屏
+默认情况下，播放为竖屏小窗口。全屏需要在IjkViewView源码中进行修改，添加以下代码：</p>
+
+<pre><code>   public IRenderView getmRenderView() {
+        return mRenderView;
+    }
+    public int getmVideoWidth() {
+        return mVideoWidth;
+    }
+    public int getmVideoHeight() {
+        return mVideoHeight;
+    }
+</code></pre>
+
+<p>在播放视频的activity中增加以下方法（具体可以查看我的项目下的MoviePlayActivity）：</p>
+
+<pre><code>//横竖屏检测切换
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //重新获取屏幕宽高
+        initScreenInfo();
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {//切换为横屏
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoView.getLayoutParams();
+            lp.height = screenHeight;
+            lp.width = screenWidth;
+            mVideoView.setLayoutParams(lp);
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoView.getLayoutParams();
+            lp.height = screenWidth * 9 / 16;
+            lp.width = screenWidth;
+            mVideoView.setLayoutParams(lp);
+        }
+        setScreenRate(currentSize);
+    }
+    //初始化屏幕配置信息
+    private void initScreenInfo() {
+        WindowManager wm = this.getWindowManager();
+        screenWidth = wm.getDefaultDisplay().getWidth();
+        screenHeight = wm.getDefaultDisplay().getHeight();
+    }
+
+    //设置视频播放比例
+    public void setScreenRate(int rate) {
+        int width = 0;
+        int height = 0;
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {// 横屏
+            if (rate == SIZE_DEFAULT) {
+                width = mVideoView.getmVideoWidth();
+                height = mVideoView.getmVideoHeight();
+            } else if (rate == SIZE_4_3) {
+                width = screenHeight / 3 * 4;
+                height = screenHeight;
+            } else if (rate == SIZE_16_9) {
+                width = screenHeight / 9 * 16;
+                height = screenHeight;
+            }
+        } else { //竖屏
+            if (rate == SIZE_DEFAULT) {
+                width = mVideoView.getmVideoWidth();
+                height = mVideoView.getmVideoHeight();
+            } else if (rate == SIZE_4_3) {
+                width = screenWidth;
+                height = screenWidth * 3 / 4;
+            } else if (rate == SIZE_16_9) {
+                width = screenWidth;
+                height = screenWidth * 9 / 16;
+            }
+        }
+        if (width &gt; 0 &amp;&amp; height &gt; 0) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mVideoView.getmRenderView().getView().getLayoutParams();
+            lp.width = width;
+            lp.height = height;
+            mVideoView.getmRenderView().getView().setLayoutParams(lp);
+        }
+    }
+
+    //手动切换
+    private void fullChangeScreen() {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {// 切换为竖屏
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+</code></pre>
+
+<p>播放时调用setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)即可。</p>
+
+<p>5)播放进度，需自行加入SeekBar：</p>
+
+<pre><code>seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+    ....
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+         video.seekTo(seekBar.getProgress()*video.getDuration()/100);
+         ...
+    }
+});
+//视频开始播放时使用handle.sendMessageDelayed更新时间显示
+private void refreshTime(){
+    int totalSeconds = video.getCurrentPosition() / 1000;
+    int seconds = totalSeconds % 60;
+    int minutes = (totalSeconds / 60) % 60;
+    int hours = totalSeconds / 3600;
+    String ti=hours &gt; 0 ? String.format(&quot;%02d:%02d:%02d&quot;, hours, minutes, seconds):String.format(&quot;%02d:%02d&quot;, minutes, seconds);
+    time.setText(ti);
+}
+</code></pre>
+
+<p>4、最后，需要根据需求在返回键或者activity销毁时取消后台播放：</p>
+
+<pre><code>    @Override
+    public void onBackPressed() {
+        mBackPressed = true;
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mBackPressed || !mVideoView.isBackgroundPlayEnabled()) {
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+        } else {
+            mVideoView.enterBackground();
+        }
+        IjkMediaPlayer.native_profileEnd();
+    }
+</code></pre>
+
+<p>补充Activity所有源码：</p>
+
+<pre><code>public class MoviePlayActivity extends AppCompatActivity {
+    @InjectView(R.id.video_view)
+    IjkVideoView mVideoView;
+    @InjectView(R.id.toast_text_view)
+    TextView mToastTextView;
+    @InjectView(R.id.hud_view)
+    TableLayout mHudView;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+    @InjectView(R.id.right_drawer)
+    FrameLayout mRightDrawer;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    private boolean mBackPressed;
+    private static final int SIZE_DEFAULT = 0;
+    private static final int SIZE_4_3 = 1;
+    private static final int SIZE_16_9 = 2;
+    private int currentSize = SIZE_16_9;
+    private int screenHeight;
+    private int screenWidth;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_movie_play);
+        ButterKnife.inject(this);
+        initToolBar();
+        initPlayer();
+        play();
+    }
+
+    /**
+     * 初始化ToolBar
+     */
+    private void initToolBar() {
+        mToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mToolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+//            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getIntent().getStringExtra(&quot;title&quot;));
+        }
+    }
+
+    //
+    private void initPlayer() {
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin(&quot;libijkplayer.so&quot;);
+        mVideoView = (IjkVideoView) findViewById(R.id.video_view);
+        mVideoView.setHudView(mHudView);
+        AndroidMediaController controller = new AndroidMediaController(this, false);
+        mVideoView.setMediaController(controller);
+    }
+
+    private void play() {
+        String url = getIntent().getStringExtra(&quot;url&quot;);
+        mVideoView.setVideoURI(Uri.parse(url));
+        mVideoView.start();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mBackPressed = true;
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mBackPressed || !mVideoView.isBackgroundPlayEnabled()) {
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+        } else {
+            mVideoView.enterBackground();
+        }
+        IjkMediaPlayer.native_profileEnd();
+    }
+
+    //横竖屏检测切换
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //重新获取屏幕宽高
+        initScreenInfo();
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {//切换为横屏
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoView.getLayoutParams();
+            lp.height = screenHeight;
+            lp.width = screenWidth;
+            mVideoView.setLayoutParams(lp);
+        } else {
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mVideoView.getLayoutParams();
+            lp.height = screenWidth * 9 / 16;
+            lp.width = screenWidth;
+            mVideoView.setLayoutParams(lp);
+        }
+        setScreenRate(currentSize);
+    }
+    //初始化屏幕配置信息
+    private void initScreenInfo() {
+        WindowManager wm = this.getWindowManager();
+        screenWidth = wm.getDefaultDisplay().getWidth();
+        screenHeight = wm.getDefaultDisplay().getHeight();
+    }
+
+    //设置视频播放比例
+    public void setScreenRate(int rate) {
+        int width = 0;
+        int height = 0;
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {// 横屏
+            if (rate == SIZE_DEFAULT) {
+                width = mVideoView.getmVideoWidth();
+                height = mVideoView.getmVideoHeight();
+            } else if (rate == SIZE_4_3) {
+                width = screenHeight / 3 * 4;
+                height = screenHeight;
+            } else if (rate == SIZE_16_9) {
+                width = screenHeight / 9 * 16;
+                height = screenHeight;
+            }
+        } else { //竖屏
+            if (rate == SIZE_DEFAULT) {
+                width = mVideoView.getmVideoWidth();
+                height = mVideoView.getmVideoHeight();
+            } else if (rate == SIZE_4_3) {
+                width = screenWidth;
+                height = screenWidth * 3 / 4;
+            } else if (rate == SIZE_16_9) {
+                width = screenWidth;
+                height = screenWidth * 9 / 16;
+            }
+        }
+        if (width &gt; 0 &amp;&amp; height &gt; 0) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mVideoView.getmRenderView().getView().getLayoutParams();
+            lp.width = width;
+            lp.height = height;
+            mVideoView.getmRenderView().getView().setLayoutParams(lp);
+        }
+    }
+
+    //手动切换
+    private void fullChangeScreen() {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {// 切换为竖屏
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+}
+</code></pre>
+
+    </div>
+ 
+    <ul class="article-taxonomy">
+                  
+      <hr>
+      <li>
+        <i class="fa fa-category"></i><a href="/categories/android">Android</a>
+      </li>
+      
+    
+      
+  </article>
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" target="_blank"><i class="fa fa-rss"></i> RSS feed</a>
+          </li>
+          <li>
+            <a href="https://github.com/mobybit/hugo-natrium-theme"><i class="fa fa-github"></i> Code</a>
+          </li>
+          <li>
+            <a href="https://smartzheng.github.io/site-notice">Site notice</a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+  </body>
+</html>
+
