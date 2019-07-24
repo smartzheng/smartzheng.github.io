@@ -51,67 +51,66 @@
     
 
     <div class="article-content">
-      <p>####项目中遇到一个需求,需要在商品标题加上标签,而标签是客户可以后台配置的,所以不是用的图片,而是用的文字.如下图:
-<img src="https://upload-images.jianshu.io/upload_images/2983970-c45ecdf7ffd29eb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/340" alt="" /></p>
+      
 
-<p>####众所周知,在Android中,View都是呈方形布置的,所以如果标签和文字如果不是同一个View,那么如果文字换行,就会出现标签和TextView分别在左右两边的效果:
-<img src="https://upload-images.jianshu.io/upload_images/2983970-276b1e708bb147d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/340" alt="" /></p>
+<h4 id="项目中遇到一个需求-需要在商品标题加上标签-而标签是客户可以后台配置的-所以不是用的图片-而是用的文字-如下图">项目中遇到一个需求,需要在商品标题加上标签,而标签是客户可以后台配置的,所以不是用的图片,而是用的文字.如下图:</h4>
 
-<p>####经过思考和查阅资料,发现可以用SpannableString设置背景,并通过重写ReplacementSpan替换原来的BackgroundColorSpan来实现圆角标签.
-####下面是代码:</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/2983970-c45ecdf7ffd29eb2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/340" alt="" /></p>
+
+<h4 id="众所周知-在android中-view都是呈方形布置的-所以如果标签和文字如果不是同一个view-那么如果文字换行-就会出现标签和textview分别在左右两边的效果">众所周知,在Android中,View都是呈方形布置的,所以如果标签和文字如果不是同一个View,那么如果文字换行,就会出现标签和TextView分别在左右两边的效果:</h4>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/2983970-276b1e708bb147d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/340" alt="" /></p>
+
+<h4 id="经过思考和查阅资料-发现可以用spannablestring设置背景-并通过重写replacementspan替换原来的backgroundcolorspan来实现圆角标签">经过思考和查阅资料,发现可以用SpannableString设置背景,并通过重写ReplacementSpan替换原来的BackgroundColorSpan来实现圆角标签.</h4>
+
+<h4 id="下面是代码">下面是代码:</h4>
 
 <p>Activity: (goodsTags为标签文字集合,即上图的&rdquo;促&rdquo;,&ldquo;九&rdquo;,&ldquo;八&rdquo;&hellip;goodsName为商品名字</p>
-
-<pre><code>for (int i = 0; i &lt; goodsTags.size(); i++) {
-	//为了显示效果在每个标签文字前加两个空格,后面加三个空格(前两个和后两个填充背景,最后一个作标签分割)
-    goodsName.insert(0, &quot;  &quot; + goodsTags.get(i).getTags_name() + &quot;   &quot;);
-    int start = 0;
-    int end = 5;
-    //稍微设置标签文字小一点
-    goodsName.setSpan(new RelativeSizeSpan(0.9f), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    //设置圆角背景
-    goodsName.setSpan(new RoundBackgroundColorSpan(Color.parseColor(&quot;#&quot; + goodsTags.get(i).getTags_color()),Color.WHITE), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-}
-</code></pre>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#6ab825;font-weight:bold">for</span> (<span style="color:#6ab825;font-weight:bold">int</span> i = 0; i &lt; goodsTags.<span style="color:#bbb">size</span>(); i++) {
+	<span style="color:#999;font-style:italic">//为了显示效果在每个标签文字前加两个空格,后面加三个空格(前两个和后两个填充背景,最后一个作标签分割)
+</span><span style="color:#999;font-style:italic"></span>    goodsName.<span style="color:#bbb">insert</span>(0, <span style="color:#ed9d13">&#34;  &#34;</span> + goodsTags.<span style="color:#bbb">get</span>(i).<span style="color:#bbb">getTags_name</span>() + <span style="color:#ed9d13">&#34;   &#34;</span>);
+    <span style="color:#6ab825;font-weight:bold">int</span> start = 0;
+    <span style="color:#6ab825;font-weight:bold">int</span> end = 5;
+    <span style="color:#999;font-style:italic">//稍微设置标签文字小一点
+</span><span style="color:#999;font-style:italic"></span>    goodsName.<span style="color:#bbb">setSpan</span>(<span style="color:#6ab825;font-weight:bold">new</span> RelativeSizeSpan(0.<span style="color:#bbb">9f</span>), start, end, Spanned.<span style="color:#bbb">SPAN_EXCLUSIVE_EXCLUSIVE</span>);
+    <span style="color:#999;font-style:italic">//设置圆角背景
+</span><span style="color:#999;font-style:italic"></span>    goodsName.<span style="color:#bbb">setSpan</span>(<span style="color:#6ab825;font-weight:bold">new</span> RoundBackgroundColorSpan(Color.<span style="color:#bbb">parseColor</span>(<span style="color:#ed9d13">&#34;#&#34;</span> + goodsTags.<span style="color:#bbb">get</span>(i).<span style="color:#bbb">getTags_color</span>()),Color.<span style="color:#bbb">WHITE</span>), start, end, Spanned.<span style="color:#bbb">SPAN_EXCLUSIVE_EXCLUSIVE</span>);
+}</code></pre></div>
 <p>自定义RoundBackgroundColorSpan:</p>
-
-<pre><code>public class RoundBackgroundColorSpan extends ReplacementSpan {
-    private int bgColor;
-    private int textColor;
-    public RoundBackgroundColorSpan(int bgColor, int textColor) {
-        super();
-        this.bgColor = bgColor;
-        this.textColor = textColor;
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf;text-decoration:underline">RoundBackgroundColorSpan</span> <span style="color:#6ab825;font-weight:bold">extends</span> ReplacementSpan {
+    <span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">int</span> bgColor;
+    <span style="color:#6ab825;font-weight:bold">private</span> <span style="color:#6ab825;font-weight:bold">int</span> textColor;
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#447fcf">RoundBackgroundColorSpan</span>(<span style="color:#6ab825;font-weight:bold">int</span> bgColor, <span style="color:#6ab825;font-weight:bold">int</span> textColor) {
+        <span style="color:#6ab825;font-weight:bold">super</span>();
+        <span style="color:#6ab825;font-weight:bold">this</span>.<span style="color:#bbb">bgColor</span> = bgColor;
+        <span style="color:#6ab825;font-weight:bold">this</span>.<span style="color:#bbb">textColor</span> = textColor;
     }
-    @Override
-    public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
-   		//设置宽度为文字宽度加16dp
-        return ((int)paint.measureText(text, start, end)+Util.px2Dp(16));
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">int</span> <span style="color:#447fcf">getSize</span>(Paint paint, CharSequence text, <span style="color:#6ab825;font-weight:bold">int</span> start, <span style="color:#6ab825;font-weight:bold">int</span> end, Paint.<span style="color:#bbb">FontMetricsInt</span> fm) {
+   		<span style="color:#999;font-style:italic">//设置宽度为文字宽度加16dp
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">return</span> ((<span style="color:#6ab825;font-weight:bold">int</span>)paint.<span style="color:#bbb">measureText</span>(text, start, end)+Util.<span style="color:#bbb">px2Dp</span>(16));
     }
 
-    @Override
-    public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-        int originalColor = paint.getColor();
-        paint.setColor(this.bgColor);
-        //画圆角矩形背景
-        canvas.drawRoundRect(new RectF(x,
-                top+ Util.px2Dp(3),
-                x + ((int) paint.measureText(text, start, end)+ Util.px2Dp(16)),
-                bottom-Util.px2Dp(1)),
+    <span style="color:#ffa500">@Override</span>
+    <span style="color:#6ab825;font-weight:bold">public</span> <span style="color:#6ab825;font-weight:bold">void</span> <span style="color:#447fcf">draw</span>(Canvas canvas, CharSequence text, <span style="color:#6ab825;font-weight:bold">int</span> start, <span style="color:#6ab825;font-weight:bold">int</span> end, <span style="color:#6ab825;font-weight:bold">float</span> x, <span style="color:#6ab825;font-weight:bold">int</span> top, <span style="color:#6ab825;font-weight:bold">int</span> y, <span style="color:#6ab825;font-weight:bold">int</span> bottom, Paint paint) {
+        <span style="color:#6ab825;font-weight:bold">int</span> originalColor = paint.<span style="color:#bbb">getColor</span>();
+        paint.<span style="color:#bbb">setColor</span>(<span style="color:#6ab825;font-weight:bold">this</span>.<span style="color:#bbb">bgColor</span>);
+        <span style="color:#999;font-style:italic">//画圆角矩形背景
+</span><span style="color:#999;font-style:italic"></span>        canvas.<span style="color:#bbb">drawRoundRect</span>(<span style="color:#6ab825;font-weight:bold">new</span> RectF(x,
+                top+ Util.<span style="color:#bbb">px2Dp</span>(3),
+                x + ((<span style="color:#6ab825;font-weight:bold">int</span>) paint.<span style="color:#bbb">measureText</span>(text, start, end)+ Util.<span style="color:#bbb">px2Dp</span>(16)),
+                bottom-Util.<span style="color:#bbb">px2Dp</span>(1)),
 
-                Util.px2Dp(4),
-                Util.px2Dp(4),
+                Util.<span style="color:#bbb">px2Dp</span>(4),
+                Util.<span style="color:#bbb">px2Dp</span>(4),
                 paint);
-        paint.setColor(this.textColor);
-        //画文字,两边各增加8dp
-        canvas.drawText(text, start, end, x+Util.px2Dp(8), y, paint);
-        //将paint复原
-        paint.setColor(originalColor);
+        paint.<span style="color:#bbb">setColor</span>(<span style="color:#6ab825;font-weight:bold">this</span>.<span style="color:#bbb">textColor</span>);
+        <span style="color:#999;font-style:italic">//画文字,两边各增加8dp
+</span><span style="color:#999;font-style:italic"></span>        canvas.<span style="color:#bbb">drawText</span>(text, start, end, x+Util.<span style="color:#bbb">px2Dp</span>(8), y, paint);
+        <span style="color:#999;font-style:italic">//将paint复原
+</span><span style="color:#999;font-style:italic"></span>        paint.<span style="color:#bbb">setColor</span>(originalColor);
     }
-}
-</code></pre>
-
+}</code></pre></div>
     </div>
  
     <ul class="article-taxonomy">

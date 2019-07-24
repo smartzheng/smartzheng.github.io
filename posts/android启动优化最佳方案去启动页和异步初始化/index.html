@@ -78,48 +78,38 @@ Complete
 <p>优化一：去掉启动页
 IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉之后可以一定幅度减少启动时间。<br />
 我的做法是直接删除SplashActivity，将MainActivity设为启动页。然后在manifests中将其theme设为启动时的theme：</p>
-
-<pre><code>&lt;activity
-    android:name=&quot;.activity.MainActivity&quot;
-    android:configChanges=&quot;screenSize|keyboardHidden|orientation&quot;
-    android:launchMode=&quot;singleTask&quot;
-    android:screenOrientation=&quot;portrait&quot;
-    android:theme=&quot;@style/SplashTheme&quot;&gt;
-    &lt;intent-filter&gt;
-        &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
-    &lt;/intent-filter&gt;
-    &lt;intent-filter&gt;
-        &lt;data android:scheme=&quot;growing.a4ce2f9edf74350a&quot;/&gt;
-        &lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-        &lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-    &lt;/intent-filter&gt;
-&lt;/activity&gt;
-</code></pre>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#6ab825;font-weight:bold">&lt;activity</span>
+    <span style="color:#bbb">android:name=</span><span style="color:#ed9d13">&#34;.activity.MainActivity&#34;</span>
+    <span style="color:#bbb">android:configChanges=</span><span style="color:#ed9d13">&#34;screenSize|keyboardHidden|orientation&#34;</span>
+    <span style="color:#bbb">android:launchMode=</span><span style="color:#ed9d13">&#34;singleTask&#34;</span>
+    <span style="color:#bbb">android:screenOrientation=</span><span style="color:#ed9d13">&#34;portrait&#34;</span>
+    <span style="color:#bbb">android:theme=</span><span style="color:#ed9d13">&#34;@style/SplashTheme&#34;</span><span style="color:#6ab825;font-weight:bold">&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;intent-filter&gt;</span>
+        <span style="color:#6ab825;font-weight:bold">&lt;action</span> <span style="color:#bbb">android:name=</span><span style="color:#ed9d13">&#34;android.intent.action.MAIN&#34;</span><span style="color:#6ab825;font-weight:bold">/&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;/intent-filter&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;intent-filter&gt;</span>
+        <span style="color:#6ab825;font-weight:bold">&lt;data</span> <span style="color:#bbb">android:scheme=</span><span style="color:#ed9d13">&#34;growing.a4ce2f9edf74350a&#34;</span><span style="color:#6ab825;font-weight:bold">/&gt;</span>
+        <span style="color:#6ab825;font-weight:bold">&lt;action</span> <span style="color:#bbb">android:name=</span><span style="color:#ed9d13">&#34;android.intent.action.VIEW&#34;</span><span style="color:#6ab825;font-weight:bold">/&gt;</span>
+        <span style="color:#6ab825;font-weight:bold">&lt;category</span> <span style="color:#bbb">android:name=</span><span style="color:#ed9d13">&#34;android.intent.category.DEFAULT&#34;</span><span style="color:#6ab825;font-weight:bold">/&gt;</span>
+        <span style="color:#6ab825;font-weight:bold">&lt;category</span> <span style="color:#bbb">android:name=</span><span style="color:#ed9d13">&#34;android.intent.category.BROWSABLE&#34;</span><span style="color:#6ab825;font-weight:bold">/&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;/intent-filter&gt;</span>
+<span style="color:#6ab825;font-weight:bold">&lt;/activity&gt;</span></code></pre></div>
 <p>SplashTheme中windowBackground为启动图片（提一句：这里的windowBackground最好是9patch图片，防止拉伸变形），这样设置还有一个好处是可以解决掉APP启动白屏的问题。</p>
-
-<pre><code>&lt;style name=&quot;SplashTheme&quot; parent=&quot;AppThemeFullScreen&quot;&gt;
-    &lt;item name=&quot;android:windowBackground&quot;&gt;@drawable/splash&lt;/item&gt;
-    &lt;item name=&quot;android:windowTranslucentNavigation&quot;&gt;true&lt;/item&gt;
-&lt;/style&gt;
-</code></pre>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#6ab825;font-weight:bold">&lt;style</span> <span style="color:#bbb">name=</span><span style="color:#ed9d13">&#34;SplashTheme&#34;</span> <span style="color:#bbb">parent=</span><span style="color:#ed9d13">&#34;AppThemeFullScreen&#34;</span><span style="color:#6ab825;font-weight:bold">&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;item</span> <span style="color:#bbb">name=</span><span style="color:#ed9d13">&#34;android:windowBackground&#34;</span><span style="color:#6ab825;font-weight:bold">&gt;</span>@drawable/splash<span style="color:#6ab825;font-weight:bold">&lt;/item&gt;</span>
+    <span style="color:#6ab825;font-weight:bold">&lt;item</span> <span style="color:#bbb">name=</span><span style="color:#ed9d13">&#34;android:windowTranslucentNavigation&#34;</span><span style="color:#6ab825;font-weight:bold">&gt;</span>true<span style="color:#6ab825;font-weight:bold">&lt;/item&gt;</span>
+<span style="color:#6ab825;font-weight:bold">&lt;/style&gt;</span></code></pre></div>
 <p>最后，在MainActivity的onCreate方法中，手动setTheme更改为Application的默认Theme：</p>
-
-<pre><code>override fun onCreate(savedInstanceState: Bundle?) {
-    setTheme(R.style.AppTheme)
-    super.onCreate(savedInstanceState)
-}
-</code></pre>
-
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">override fun <span style="color:#447fcf">onCreate</span>(savedInstanceState: Bundle?) {
+    setTheme(R.<span style="color:#bbb">style</span>.<span style="color:#bbb">AppTheme</span>)
+    <span style="color:#6ab825;font-weight:bold">super</span>.<span style="color:#bbb">onCreate</span>(savedInstanceState)
+}</code></pre></div>
 <p>评论中有人问到如果去掉闪屏页，那广告位怎么解决？其实广告页面的显示其实用一个单独的Activity实现不是一个好选择，直接调用Activity的addContentView方法就可以添加一个view在activity上面，在倒计时完成之后再removeContentView，这样随时都可以在任意activity上添加广告，通用性和性能都更好。</p>
 
 <p>优化二：异步初始化<br />
 优化之前，我的Application的onCreate是这样的：</p>
-
-<pre><code>override fun onCreate() {
-    super.onCreate()
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">override fun <span style="color:#447fcf">onCreate</span>() {
+    <span style="color:#6ab825;font-weight:bold">super</span>.<span style="color:#bbb">onCreate</span>()
     installSysExceptionHandler()
     initImPush()
     initGrowing()
@@ -133,31 +123,26 @@ IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉�
     initSeoReport()
     initStrictMode()
     initFonts()
-}
-</code></pre>
-
+}</code></pre></div>
 <p>每一项初始化任务都是同步执行的。优化的思想就是将各个初始化任务放到一个线程池中去执行。优化之后代码如下：</p>
-
-<pre><code>override fun onCreate() {
-    super.onCreate()
-    TaskDispatcher.init(this)
-    TaskDispatcher.createInstance().run {
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">override fun <span style="color:#447fcf">onCreate</span>() {
+    <span style="color:#6ab825;font-weight:bold">super</span>.<span style="color:#bbb">onCreate</span>()
+    TaskDispatcher.<span style="color:#bbb">init</span>(<span style="color:#6ab825;font-weight:bold">this</span>)
+    TaskDispatcher.<span style="color:#bbb">createInstance</span>().<span style="color:#bbb">run</span> {
         addTask(InitApolloTask())
-            .addTask(InitBaiduTask())
-            .addTask(InitBuglyTask())
-            .addTask(InitFontTask())
-            .addTask(InitGrowingTask())
-            .addTask(InitIMPushTask())
-            .addTask(InitIMSDKTask())
-            .addTask(InitJPushTask())
-            .addTask(InitViewTask())
-            .addTask(InitRxjavaTask())
+            .<span style="color:#bbb">addTask</span>(InitBaiduTask())
+            .<span style="color:#bbb">addTask</span>(InitBuglyTask())
+            .<span style="color:#bbb">addTask</span>(InitFontTask())
+            .<span style="color:#bbb">addTask</span>(InitGrowingTask())
+            .<span style="color:#bbb">addTask</span>(InitIMPushTask())
+            .<span style="color:#bbb">addTask</span>(InitIMSDKTask())
+            .<span style="color:#bbb">addTask</span>(InitJPushTask())
+            .<span style="color:#bbb">addTask</span>(InitViewTask())
+            .<span style="color:#bbb">addTask</span>(InitRxjavaTask())
        start()
        await()
     }
-}
-</code></pre>
-
+}</code></pre></div>
 <p>看看优化之后的启动耗时（release环境下），启动速度大概提升了近30%：</p>
 
 <pre><code>-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
@@ -177,8 +162,9 @@ Complete
 部分初始化任务需要先执行<br />
 部分初始化任务需要依赖其他任务执行完之后才可以执行<br />
 部分任务必须执行完才能进入Activity页面
-参考课程，将封装的代码放到了<a href="https://github.com/smartzheng/asyncstarter">GitHub</a>，可以直接依赖使用；具体的实现细节在源码中有详细注释。使用方法如下：
-1.添加仓库</p>
+参考课程，将封装的代码放到了<a href="https://github.com/smartzheng/asyncstarter">GitHub</a>，可以直接依赖使用；具体的实现细节在源码中有详细注释。使用方法如下：</p>
+
+<p>1.添加仓库</p>
 
 <pre><code>allprojects {
 	repositories {
@@ -188,65 +174,57 @@ Complete
 }
 </code></pre>
 
-<ol>
-<li><p>添加依赖</p>
+<p>2.添加依赖</p>
 
 <pre><code>dependencies {
-implementation 'com.github.smartzheng:asyncstarter:1.0.1'
+    implementation 'com.github.smartzheng:asyncstarter:1.0.1' 
 }
-</code></pre></li>
-</ol>
+</code></pre>
 
 <p>3.自定义Task</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf;text-decoration:underline">InitTask</span> : Task() {
+        override fun <span style="color:#447fcf">needWait</span>(): Boolean {<span style="color:#999;font-style:italic">//是否需要在阻塞在await(),在Application的onCreate方法之前执行完
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">true</span>
+        }
 
-<pre><code>class InitTask : Task() {
-    override fun needWait(): Boolean {//是否需要在阻塞在await(),在Application的onCreate方法之前执行完
-    return true
-    }
-
-    override fun dependsOn(): MutableList&lt;Class&lt;out Task&gt;&gt; {//等待另一个Task执行完再执行此任务初始化
-        return mutableListOf(InitTask1::class.java)
-    }
-    override fun runOnMainThread(): Boolean {//是否需要运行在主线程
-        return true
-    }
-    override fun needRunAsSoon(): Boolean {//提高优先级,也可以指定优先级大小priority
-        return true
-    }
-    override fun run() {
-        //初始化
-    }
-}
-</code></pre>
-
+        override fun <span style="color:#447fcf">dependsOn</span>(): MutableList&lt;Class&lt;out Task&gt;&gt; {<span style="color:#999;font-style:italic">//等待另一个Task执行完再执行此任务初始化
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#6ab825;font-weight:bold">return</span> mutableListOf(InitTask1::class.<span style="color:#bbb">java</span>)
+        }
+        override fun <span style="color:#447fcf">runOnMainThread</span>(): Boolean {<span style="color:#999;font-style:italic">//是否需要运行在主线程
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">true</span>
+        }
+        override fun <span style="color:#447fcf">needRunAsSoon</span>(): Boolean {<span style="color:#999;font-style:italic">//提高优先级,也可以指定优先级大小priority
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#6ab825;font-weight:bold">return</span> <span style="color:#6ab825;font-weight:bold">true</span>
+        }
+        override fun <span style="color:#447fcf">run</span>() {
+            <span style="color:#999;font-style:italic">//初始化
+</span><span style="color:#999;font-style:italic"></span>        }
+    }</code></pre></div>
 <p>4.在Application中</p>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf;text-decoration:underline">MyApplication</span> : Application() {
+        override fun <span style="color:#447fcf">onCreate</span>() {
+            <span style="color:#6ab825;font-weight:bold">super</span>.<span style="color:#bbb">onCreate</span>()
+            AsyncStarter.<span style="color:#bbb">init</span>(<span style="color:#6ab825;font-weight:bold">this</span>)
+            val starter = AsyncStarter.<span style="color:#bbb">createInstance</span>()
 
-<pre><code>class MyApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        AsyncStarter.init(this)
-        val starter = AsyncStarter.createInstance()
-
-        starter.addTask(InitTask1())
-            .addTask(InitTask2())
-            .addTask(InitTask3())
-            //addTask()...
-        starter.start()
-        starter.await()
-        //Kotlin run
-        //AsyncStarter.createInstance()
-        //            .run {
-        //                addTask(InitTask1())
-        //                    .addTask(InitTask2())
-        //                    .addTask(InitTask3())
-        //                    //addTask()...
-        //                    .start()
-        //                await()
-        //            }
-    }
-}
-</code></pre>
-
+            starter.<span style="color:#bbb">addTask</span>(InitTask1())
+                .<span style="color:#bbb">addTask</span>(InitTask2())
+                .<span style="color:#bbb">addTask</span>(InitTask3())
+                <span style="color:#999;font-style:italic">//addTask()...
+</span><span style="color:#999;font-style:italic"></span>            starter.<span style="color:#bbb">start</span>()
+            starter.<span style="color:#bbb">await</span>()
+            <span style="color:#999;font-style:italic">//Kotlin run
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//AsyncStarter.createInstance()
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//            .run {
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                addTask(InitTask1())
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                    .addTask(InitTask2())
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                    .addTask(InitTask3())
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                    //addTask()...
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                    .start()
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//                await()
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#999;font-style:italic">//            }
+</span><span style="color:#999;font-style:italic"></span>        }
+    }</code></pre></div>
 <p>详细的配置解释和实例可以查看GitHub源码，其中有详细注释，欢迎star：<a href="https://github.com/smartzheng/asyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
 
     </div>

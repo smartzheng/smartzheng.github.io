@@ -51,86 +51,85 @@
     
 
     <div class="article-content">
-      <blockquote>
+      
+
+<blockquote>
 <p>工作中有一个定制需求：根据不同的用户需求，需要替换APP内的图片，以及部分代码里面的配置信息，打出不同的apk交给客户使用。如果只用生成少量的apk，那么可以将所有图片放入资源文件夹然后根据服务端的信息来进行指定显示，但是随着客户量增加，需要打出数十个apk，并且启动图片不能根据配置来进行替换。所以必须手动更换图片和代码进行打包。这样容易出错，也比较低效，一旦出错必须全部重新返工。所有就写了一个简单的Python脚本来进行一次性批量打包。
 GitHub项目地址:<a href="https://github.com/smartzheng/AutoApkRelease">https://github.com/smartzheng/AutoApkRelease</a></p>
 </blockquote>
 
-<p>###安装Python环境内容不再赘述，可参见网上教程。我使用的是Python3。</p>
+<h3 id="安装python环境内容不再赘述-可参见网上教程-我使用的是python3">安装Python环境内容不再赘述，可参见网上教程。我使用的是Python3。</h3>
 
-<p>###以下是详细代码，可参见注释进行配置。</p>
+<h3 id="以下是详细代码-可参见注释进行配置">以下是详细代码，可参见注释进行配置。</h3>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#999;font-style:italic">#! python3</span>
+<span style="color:#999;font-style:italic"># 替换代码和文件，所替换的文本内容必须是当前文件的唯一字符串（可以加长需要替换扥字符串实现唯一性）</span>
+<span style="color:#999;font-style:italic">#如需增加要替换的代码内容或者资源，只需要增加数组并且调用替换方法即可</span>
+<span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf;text-decoration:underline">os</span>
+<span style="color:#999;font-style:italic">#app启动名</span>
+appNames = [<span style="color:#ed9d13">&#34;app1&#34;</span>,<span style="color:#ed9d13">&#34;app2&#34;</span>,<span style="color:#ed9d13">&#34;app3&#34;</span>]
+<span style="color:#999;font-style:italic">#gradle中的applicationId</span>
+replaceText = [<span style="color:#ed9d13">&#34;text1&#34;</span>,<span style="color:#ed9d13">&#34;text2&#34;</span>,<span style="color:#ed9d13">&#34;text3&#34;</span>]
+<span style="color:#999;font-style:italic">#gradle中的applicationId</span>
+appIds = [<span style="color:#ed9d13">&#34;applicationId1&#34;</span>,<span style="color:#ed9d13">&#34;applicationId2&#34;</span>,<span style="color:#ed9d13">&#34;applicationId3&#34;</span>]
+<span style="color:#999;font-style:italic">#输出apk的文件名</span>
+apkNames = [<span style="color:#ed9d13">&#34;apk1&#34;</span>,<span style="color:#ed9d13">&#34;apk2&#34;</span>,<span style="color:#ed9d13">&#34;apk3&#34;</span>]
+<span style="color:#999;font-style:italic">#项目的资源文件夹路径</span>
+targetDir = <span style="color:#ed9d13">&#34;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res&#34;</span>
+<span style="color:#999;font-style:italic">#配置自己存放不同apk资源图片的路径,分别命名为apk1，apk2，apk3...（apkNames的每个元素）需要替换的图片必须名字对应一致</span>
+sourceDir = <span style="color:#ed9d13">&#34;/Users/smartzheng/custom_app_imgs/&#34;</span>
 
-<pre><code>#! python3
-# 替换代码和文件，所替换的文本内容必须是当前文件的唯一字符串（可以加长需要替换扥字符串实现唯一性）
-#如需增加要替换的代码内容或者资源，只需要增加数组并且调用替换方法即可
-import os
-#app启动名
-appNames = [&quot;app1&quot;,&quot;app2&quot;,&quot;app3&quot;]
-#gradle中的applicationId
-replaceText = [&quot;text1&quot;,&quot;text2&quot;,&quot;text3&quot;]
-#gradle中的applicationId
-appIds = [&quot;applicationId1&quot;,&quot;applicationId2&quot;,&quot;applicationId3&quot;]
-#输出apk的文件名
-apkNames = [&quot;apk1&quot;,&quot;apk2&quot;,&quot;apk3&quot;]
-#项目的资源文件夹路径
-targetDir = &quot;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res&quot;
-#配置自己存放不同apk资源图片的路径,分别命名为apk1，apk2，apk3...（apkNames的每个元素）需要替换的图片必须名字对应一致
-sourceDir = &quot;/Users/smartzheng/custom_app_imgs/&quot;
-
-# 拷贝替换文件，传入图片路径和项目资源目录
-def copyFiles(sourceDir, targetDir):
-    for file in os.listdir(sourceDir):
-        sourceFile = os.path.join(sourceDir, file)
-        targetFile = os.path.join(targetDir, file)
-        if os.path.isfile(sourceFile):
-            if not os.path.exists(targetDir):
+<span style="color:#999;font-style:italic"># 拷贝替换文件，传入图片路径和项目资源目录</span>
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">copyFiles</span>(sourceDir, targetDir):
+    <span style="color:#6ab825;font-weight:bold">for</span> <span style="color:#24909d">file</span> <span style="color:#6ab825;font-weight:bold">in</span> os.listdir(sourceDir):
+        sourceFile = os.path.join(sourceDir, <span style="color:#24909d">file</span>)
+        targetFile = os.path.join(targetDir, <span style="color:#24909d">file</span>)
+        <span style="color:#6ab825;font-weight:bold">if</span> os.path.isfile(sourceFile):
+            <span style="color:#6ab825;font-weight:bold">if</span> <span style="color:#6ab825;font-weight:bold">not</span> os.path.exists(targetDir):
                 os.makedirs(targetDir)
-            open(targetFile, &quot;wb&quot;).write(open(sourceFile, &quot;rb&quot;).read())
-        if os.path.isdir(sourceFile):
+            <span style="color:#24909d">open</span>(targetFile, <span style="color:#ed9d13">&#34;wb&#34;</span>).write(<span style="color:#24909d">open</span>(sourceFile, <span style="color:#ed9d13">&#34;rb&#34;</span>).read())
+        <span style="color:#6ab825;font-weight:bold">if</span> os.path.isdir(sourceFile):
             copyFiles(sourceFile, targetFile)
 
-#替换文本内容，传入文件路径，原字符串，目标字符串
-def replaceText(f_path, text1, text2):
-    with open(f_path, 'r', encoding='utf-8') as r:
+<span style="color:#999;font-style:italic">#替换文本内容，传入文件路径，原字符串，目标字符串</span>
+<span style="color:#6ab825;font-weight:bold">def</span> <span style="color:#447fcf">replaceText</span>(f_path, text1, text2):
+    <span style="color:#6ab825;font-weight:bold">with</span> <span style="color:#24909d">open</span>(f_path, <span style="color:#ed9d13">&#39;r&#39;</span>, encoding=<span style="color:#ed9d13">&#39;utf-8&#39;</span>) <span style="color:#6ab825;font-weight:bold">as</span> r:
         s = r.read()
         replace = s.replace(text1, text2)
-    with open(f_path, 'w', encoding='utf-8') as w:
+    <span style="color:#6ab825;font-weight:bold">with</span> <span style="color:#24909d">open</span>(f_path, <span style="color:#ed9d13">&#39;w&#39;</span>, encoding=<span style="color:#ed9d13">&#39;utf-8&#39;</span>) <span style="color:#6ab825;font-weight:bold">as</span> w:
         w.write(replace)
     r.close()
     w.close()
 
 
-print(&quot;begin&quot;)
-# 循环执行打包操作
-for i in range(len(appNames)):
-    if i != 0:
-        # 替换Config配置文件下的代码内容
-        replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/java/com/smartzheng/Config.java',replaceText[i - 1],replaceText[i])
-        #替换app名字
-        replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res/values/strings.xml', appNames[i - 1],appNames[i])
-        #替換applicationId,即替换包名
-        replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle',appIds[i-1],appIds[i])
-        #替换输出的路径
-        replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle',apkNames[i-1],apkNames[i])
-        # 替换资源图片
+<span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;begin&#34;</span>)
+<span style="color:#999;font-style:italic"># 循环执行打包操作</span>
+<span style="color:#6ab825;font-weight:bold">for</span> i <span style="color:#6ab825;font-weight:bold">in</span> <span style="color:#24909d">range</span>(<span style="color:#24909d">len</span>(appNames)):
+    <span style="color:#6ab825;font-weight:bold">if</span> i != <span style="color:#3677a9">0</span>:
+        <span style="color:#999;font-style:italic"># 替换Config配置文件下的代码内容</span>
+        replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/java/com/smartzheng/Config.java&#39;</span>,replaceText[i - <span style="color:#3677a9">1</span>],replaceText[i])
+        <span style="color:#999;font-style:italic">#替换app名字</span>
+        replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res/values/strings.xml&#39;</span>, appNames[i - <span style="color:#3677a9">1</span>],appNames[i])
+        <span style="color:#999;font-style:italic">#替換applicationId,即替换包名</span>
+        replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle&#39;</span>,appIds[i-<span style="color:#3677a9">1</span>],appIds[i])
+        <span style="color:#999;font-style:italic">#替换输出的路径</span>
+        replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle&#39;</span>,apkNames[i-<span style="color:#3677a9">1</span>],apkNames[i])
+        <span style="color:#999;font-style:italic"># 替换资源图片</span>
         copyFiles(sourceDir + apkNames[i], targetDir)
-        # 打包(windows为gradlew assembleRelease)
-        os.system(&quot;gradle assembleRelease&quot;)
+        <span style="color:#999;font-style:italic"># 打包(windows为gradlew assembleRelease)</span>
+        os.system(<span style="color:#ed9d13">&#34;gradle assembleRelease&#34;</span>)
 
-# 将代码及资源文件回归到原位
-replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/java/com/smartzheng/Config.java',replaceText[len(appNames) - 1],replaceText[0])
-replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res/values/strings.xml', appNames[len(appNames) - 1],appNames[0])
-replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle',apkNames[len(appNames) - 1],apkNames[0])
-replaceText(r'/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle',appIds[len(appIds) - 1],appIds[0])
-copyFiles(sourceDir + replaceText[0], targetDir)
-print(&quot;success&quot;)
+<span style="color:#999;font-style:italic"># 将代码及资源文件回归到原位</span>
+replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/java/com/smartzheng/Config.java&#39;</span>,replaceText[<span style="color:#24909d">len</span>(appNames) - <span style="color:#3677a9">1</span>],replaceText[<span style="color:#3677a9">0</span>])
+replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res/values/strings.xml&#39;</span>, appNames[<span style="color:#24909d">len</span>(appNames) - <span style="color:#3677a9">1</span>],appNames[<span style="color:#3677a9">0</span>])
+replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle&#39;</span>,apkNames[<span style="color:#24909d">len</span>(appNames) - <span style="color:#3677a9">1</span>],apkNames[<span style="color:#3677a9">0</span>])
+replaceText(<span style="color:#ed9d13">r</span><span style="color:#ed9d13">&#39;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/build.gradle&#39;</span>,appIds[<span style="color:#24909d">len</span>(appIds) - <span style="color:#3677a9">1</span>],appIds[<span style="color:#3677a9">0</span>])
+copyFiles(sourceDir + replaceText[<span style="color:#3677a9">0</span>], targetDir)
+<span style="color:#6ab825;font-weight:bold">print</span>(<span style="color:#ed9d13">&#34;success&#34;</span>)</code></pre></div>
+<h3 id="代码保存为autorelease-py">代码保存为autoRelease.py</h3>
 
-</code></pre>
+<h3 id="默认情况下-gradle文件需要加入以下内容">默认情况下，.gradle文件需要加入以下内容：</h3>
 
-<p>###代码保存为autoRelease.py</p>
-
-<p>###默认情况下，.gradle文件需要加入以下内容：<br />
-###android节点下：</p>
+<h3 id="android节点下">android节点下：</h3>
 
 <pre><code>applicationVariants.all { variant -&gt; 
         variant.outputs.each { output -&gt;  
@@ -140,14 +139,14 @@ print(&quot;success&quot;)
     }  
 </code></pre>
 
-<p>###输出路径修改</p>
+<h3 id="输出路径修改">输出路径修改</h3>
 
 <pre><code>def apkName = &quot;apk1&quot;//apkNames[0]，每次输出不一样名字的apk
 //前面加上自己的本地输出路径
 def outputPathName = /Users/smartzheng/AndroidStudioProjects/apks + apkName
 </code></pre>
 
-<p>###默认的applicationId</p>
+<h3 id="默认的applicationid">默认的applicationId</h3>
 
 <pre><code>applicationId &quot;com.smartzheng.&quot; + applicationId1 //默认为前缀加appIds[0]
 </code></pre>
@@ -156,7 +155,7 @@ def outputPathName = /Users/smartzheng/AndroidStudioProjects/apks + apkName
 
 <p>另外，项目中需要替换的内容不多，如果多的话还可以利用字典进行优化。</p>
 
-<p>###以上。</p>
+<h3 id="以上">以上。</h3>
 
     </div>
  
