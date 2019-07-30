@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Android启动优化最佳方案：去启动页和异步初始化 - Even - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="olOwOlo" /><meta name="description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Android启动优化最佳方案：去启动页和异步初始化" />
+<meta property="og:description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/" />
+<meta property="article:published_time" content="2019-04-25T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-04-25T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="Android启动优化最佳方案：去启动页和异步初始化">
+<meta itemprop="description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，">
+
+
+<meta itemprop="datePublished" content="2019-04-25T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-04-25T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1662">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android启动优化最佳方案：去启动页和异步初始化"/>
+<meta name="twitter:description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Even</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Even</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Android启动优化最佳方案：去启动页和异步初始化</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-25 </span>
+        <div class="post-category">
+            <a href="/categories/android/"> Android </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>项目地址：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Fsmartzheng%2Fasyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
+
+<p>随着APP的日渐增大，集成的三方库也越来越多，导致APP的启动极其缓慢。最近在慕课get了一些不错的优化方案，将原来的冷启动时间大概提升30%。
+启动的时间监测可以直接用adb命令实现：
+&gt;adb shell am start -W PackageName/ActivityName</p>
+
+<p>下面是我未优化之前的项目debug版本启动时间（华为p10plus），这里介绍一下几个概念<br />
+ThisTime：最后一个Activity启动耗时
+TotalTime：所有Activity启动耗时
+WaitTimeTime：AMS启动Activity启动耗时<br />
+可以看到耗时接近1.3s多（1.3s不算长，但是往往应用加固之后还会慢大一截）。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.
+LAUNCHER]cmp=com.smartzheng/.activity.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.uoko.mlgb/.mvp.view.activity.MainActivity
+ThisTime: 600
+TotalTime: 1301
+WaitTime: 1330
+Complete</pre></td></tr></table>
+</div>
+</div>
+<p>优化一：去掉启动页
+IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉之后可以一定幅度减少启动时间。<br />
+我的做法是直接删除SplashActivity，将MainActivity设为启动页。然后在manifests中将其theme设为启动时的theme：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;activity</span>
+    <span class="na">android:name=</span><span class="s">&#34;.activity.MainActivity&#34;</span>
+    <span class="na">android:configChanges=</span><span class="s">&#34;screenSize|keyboardHidden|orientation&#34;</span>
+    <span class="na">android:launchMode=</span><span class="s">&#34;singleTask&#34;</span>
+    <span class="na">android:screenOrientation=</span><span class="s">&#34;portrait&#34;</span>
+    <span class="na">android:theme=</span><span class="s">&#34;@style/SplashTheme&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;intent-filter&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.action.MAIN&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/intent-filter&gt;</span>
+    <span class="nt">&lt;intent-filter&gt;</span>
+        <span class="nt">&lt;data</span> <span class="na">android:scheme=</span><span class="s">&#34;growing.a4ce2f9edf74350a&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.action.VIEW&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.category.DEFAULT&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.category.BROWSABLE&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/intent-filter&gt;</span>
+<span class="nt">&lt;/activity&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>SplashTheme中windowBackground为启动图片（提一句：这里的windowBackground最好是9patch图片，防止拉伸变形），这样设置还有一个好处是可以解决掉APP启动白屏的问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">&#34;SplashTheme&#34;</span> <span class="na">parent=</span><span class="s">&#34;AppThemeFullScreen&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&#34;android:windowBackground&#34;</span><span class="nt">&gt;</span>@drawable/splash<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&#34;android:windowTranslucentNavigation&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/style&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>最后，在MainActivity的onCreate方法中，手动setTheme更改为Application的默认Theme：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nl">savedInstanceState:</span> <span class="n">Bundle</span><span class="o">?)</span> <span class="o">{</span>
+    <span class="n">setTheme</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">style</span><span class="o">.</span><span class="na">AppTheme</span><span class="o">)</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">)</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>评论中有人问到如果去掉闪屏页，那广告位怎么解决？其实广告页面的显示其实用一个单独的Activity实现不是一个好选择，直接调用Activity的addContentView方法就可以添加一个view在activity上面，在倒计时完成之后再removeContentView，这样随时都可以在任意activity上添加广告，通用性和性能都更好。</p>
+
+<p>优化二：异步初始化<br />
+优化之前，我的Application的onCreate是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">()</span>
+    <span class="n">installSysExceptionHandler</span><span class="o">()</span>
+    <span class="n">initImPush</span><span class="o">()</span>
+    <span class="n">initGrowing</span><span class="o">()</span>
+    <span class="n">initBaidu</span><span class="o">()</span>
+    <span class="n">initApollo</span><span class="o">()</span>
+    <span class="n">initBugly</span><span class="o">()</span>
+    <span class="n">initIMSdk</span><span class="o">()</span>
+    <span class="n">initPush</span><span class="o">()</span>
+    <span class="n">initRxJava</span><span class="o">()</span>
+    <span class="n">initNineGridView</span><span class="o">()</span>
+    <span class="n">initSeoReport</span><span class="o">()</span>
+    <span class="n">initStrictMode</span><span class="o">()</span>
+    <span class="n">initFonts</span><span class="o">()</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>每一项初始化任务都是同步执行的。优化的思想就是将各个初始化任务放到一个线程池中去执行。优化之后代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">()</span>
+    <span class="n">TaskDispatcher</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+    <span class="n">TaskDispatcher</span><span class="o">.</span><span class="na">createInstance</span><span class="o">().</span><span class="na">run</span> <span class="o">{</span>
+        <span class="n">addTask</span><span class="o">(</span><span class="n">InitApolloTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitBaiduTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitBuglyTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitFontTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitGrowingTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitIMPushTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitIMSDKTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitJPushTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitViewTask</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitRxjavaTask</span><span class="o">())</span>
+       <span class="n">start</span><span class="o">()</span>
+       <span class="n">await</span><span class="o">()</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>看看优化之后的启动耗时（release环境下），启动速度大概提升了近30%：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.
+LAUNCHER]cmp=com.smartzheng/.activity.MainActivity }
+Status: ok
+Activity: com.uoko.mlgb/.mvp.view.activity.MainActivity
+ThisTime: 911
+TotalTime: 911
+WaitTime: 931
+Complete</pre></td></tr></table>
+</div>
+</div>
+<p>将各个初始化任务放到线程池执行需要解决很多问题：<br />
+部分初始化工作只能在主线程执行<br />
+部分初始化任务需要先执行<br />
+部分初始化任务需要依赖其他任务执行完之后才可以执行<br />
+部分任务必须执行完才能进入Activity页面
+参考课程，将封装的代码放到了<a href="https://github.com/smartzheng/asyncstarter">GitHub</a>，可以直接依赖使用；具体的实现细节在源码中有详细注释。使用方法如下：</p>
+
+<p>1.添加仓库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">allprojects {
+	repositories {
+		...
+		maven { url &#39;https://jitpack.io&#39; }
+	}
+}</pre></td></tr></table>
+</div>
+</div>
+<p>2.添加依赖</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">dependencies {
+    implementation &#39;com.github.smartzheng:asyncstarter:1.0.1&#39; 
+}</pre></td></tr></table>
+</div>
+</div>
+<p>3.自定义Task</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">InitTask</span> <span class="o">:</span> <span class="n">Task</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">needWait</span><span class="o">():</span> <span class="n">Boolean</span> <span class="o">{</span><span class="c1">//是否需要在阻塞在await(),在Application的onCreate方法之前执行完
+</span><span class="c1"></span>        <span class="k">return</span> <span class="kc">true</span>
+        <span class="o">}</span>
+
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">dependsOn</span><span class="o">():</span> <span class="n">MutableList</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">out</span> <span class="n">Task</span><span class="o">&gt;&gt;</span> <span class="o">{</span><span class="c1">//等待另一个Task执行完再执行此任务初始化
+</span><span class="c1"></span>            <span class="k">return</span> <span class="n">mutableListOf</span><span class="o">(</span><span class="nl">InitTask1:</span><span class="o">:</span><span class="n">class</span><span class="o">.</span><span class="na">java</span><span class="o">)</span>
+        <span class="o">}</span>
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">runOnMainThread</span><span class="o">():</span> <span class="n">Boolean</span> <span class="o">{</span><span class="c1">//是否需要运行在主线程
+</span><span class="c1"></span>            <span class="k">return</span> <span class="kc">true</span>
+        <span class="o">}</span>
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">needRunAsSoon</span><span class="o">():</span> <span class="n">Boolean</span> <span class="o">{</span><span class="c1">//提高优先级,也可以指定优先级大小priority
+</span><span class="c1"></span>            <span class="k">return</span> <span class="kc">true</span>
+        <span class="o">}</span>
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">//初始化
+</span><span class="c1"></span>        <span class="o">}</span>
+    <span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>4.在Application中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">MyApplication</span> <span class="o">:</span> <span class="n">Application</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">()</span>
+            <span class="n">AsyncStarter</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+            <span class="n">val</span> <span class="n">starter</span> <span class="o">=</span> <span class="n">AsyncStarter</span><span class="o">.</span><span class="na">createInstance</span><span class="o">()</span>
+
+            <span class="n">starter</span><span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitTask1</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitTask2</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">addTask</span><span class="o">(</span><span class="n">InitTask3</span><span class="o">())</span>
+                <span class="c1">//addTask()...
+</span><span class="c1"></span>            <span class="n">starter</span><span class="o">.</span><span class="na">start</span><span class="o">()</span>
+            <span class="n">starter</span><span class="o">.</span><span class="na">await</span><span class="o">()</span>
+            <span class="c1">//Kotlin run
+</span><span class="c1"></span>            <span class="c1">//AsyncStarter.createInstance()
+</span><span class="c1"></span>            <span class="c1">//            .run {
+</span><span class="c1"></span>            <span class="c1">//                addTask(InitTask1())
+</span><span class="c1"></span>            <span class="c1">//                    .addTask(InitTask2())
+</span><span class="c1"></span>            <span class="c1">//                    .addTask(InitTask3())
+</span><span class="c1"></span>            <span class="c1">//                    //addTask()...
+</span><span class="c1"></span>            <span class="c1">//                    .start()
+</span><span class="c1"></span>            <span class="c1">//                await()
+</span><span class="c1"></span>            <span class="c1">//            }
+</span><span class="c1"></span>        <span class="o">}</span>
+    <span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>详细的配置解释和实例可以查看GitHub源码，其中有详细注释，欢迎star：<a href="https://github.com/smartzheng/asyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">olOwOlo</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-04-25
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/rxjava%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">RxJava基本语法源码分析</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/%E4%BC%AA%E5%BF%83%E7%90%86%E5%AD%A6%E7%9A%84%E6%9C%AC%E8%B4%A8/">
+            <span class="next-text nav-default">伪心理学的本质</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">olOwOlo</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

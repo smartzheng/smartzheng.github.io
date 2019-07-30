@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Python on smartzheng</title>
+    <title>Python on Even - A super concise theme for Hugo</title>
     <link>https://smartzheng.github.io/categories/python/</link>
-    <description>Recent content in Python on smartzheng</description>
+    <description>Recent content in Python on Even - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Wed, 28 Mar 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/categories/python/index.xml" rel="self" type="application/rss+xml" />
@@ -13,12 +13,11 @@
     
     <item>
       <title>利用Python实现Android替换内容批量打包</title>
-      <link>https://smartzheng.github.io/posts/%E5%88%A9%E7%94%A8python%E5%AE%9E%E7%8E%B0android%E6%9B%BF%E6%8D%A2%E5%86%85%E5%AE%B9%E6%89%B9%E9%87%8F%E6%89%93%E5%8C%85/</link>
+      <link>https://smartzheng.github.io/post/%E5%88%A9%E7%94%A8python%E5%AE%9E%E7%8E%B0android%E6%9B%BF%E6%8D%A2%E5%86%85%E5%AE%B9%E6%89%B9%E9%87%8F%E6%89%93%E5%8C%85/</link>
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://smartzheng.github.io/posts/%E5%88%A9%E7%94%A8python%E5%AE%9E%E7%8E%B0android%E6%9B%BF%E6%8D%A2%E5%86%85%E5%AE%B9%E6%89%B9%E9%87%8F%E6%89%93%E5%8C%85/</guid>
-      <description>工作中有一个定制需求：根据不同的用户需求，需要替换APP内的图片，以及部分代码里面的配置信息，打出不同的apk交给客户使用。如果只用生成少量的apk，那么可以将所有图片放入资源文件夹然后根据服务端的信息来进行指定显示，但是随着客户量增加，需要打出数十个apk，并且启动图片不能根据配置来进行替换。所以必须手动更换图片和代码进行打包。这样容易出错，也比较低效，一旦出错必须全部重新返工。所有就写了一个简单的Python脚本来进行一次性批量打包。 GitHub项目地址:https://github.com/smartzheng/AutoApkRelease
- 安装Python环境内容不再赘述，可参见网上教程。我使用的是Python3。 以下是详细代码，可参见注释进行配置。 #! python3 # 替换代码和文件，所替换的文本内容必须是当前文件的唯一字符串（可以加长需要替换扥字符串实现唯一性） #如需增加要替换的代码内容或者资源，只需要增加数组并且调用替换方法即可 import os #app启动名 appNames = [&amp;#34;app1&amp;#34;,&amp;#34;app2&amp;#34;,&amp;#34;app3&amp;#34;] #gradle中的applicationId replaceText = [&amp;#34;text1&amp;#34;,&amp;#34;text2&amp;#34;,&amp;#34;text3&amp;#34;] #gradle中的applicationId appIds = [&amp;#34;applicationId1&amp;#34;,&amp;#34;applicationId2&amp;#34;,&amp;#34;applicationId3&amp;#34;] #输出apk的文件名 apkNames = [&amp;#34;apk1&amp;#34;,&amp;#34;apk2&amp;#34;,&amp;#34;apk3&amp;#34;] #项目的资源文件夹路径 targetDir = &amp;#34;/Users/smartzheng/AndroidStudioProjects/MyApplication/app/src/main/res&amp;#34; #配置自己存放不同apk资源图片的路径,分别命名为apk1，apk2，apk3...（apkNames的每个元素）需要替换的图片必须名字对应一致 sourceDir = &amp;#34;/Users/smartzheng/custom_app_imgs/&amp;#34; # 拷贝替换文件，传入图片路径和项目资源目录 def copyFiles(sourceDir, targetDir): for file in os.listdir(sourceDir): sourceFile = os.path.join(sourceDir, file) targetFile = os.path.join(targetDir, file) if os.path.isfile(sourceFile): if not os.path.exists(targetDir): os.makedirs(targetDir) open(targetFile, &amp;#34;wb&amp;#34;).write(open(sourceFile, &amp;#34;rb&amp;#34;).read()) if os.path.isdir(sourceFile): copyFiles(sourceFile, targetFile) #替换文本内容，传入文件路径，原字符串，目标字符串 def replaceText(f_path, text1, text2): with open(f_path, &amp;#39;r&amp;#39;, encoding=&amp;#39;utf-8&amp;#39;) as r: s = r.</description>
+      <guid>https://smartzheng.github.io/post/%E5%88%A9%E7%94%A8python%E5%AE%9E%E7%8E%B0android%E6%9B%BF%E6%8D%A2%E5%86%85%E5%AE%B9%E6%89%B9%E9%87%8F%E6%89%93%E5%8C%85/</guid>
+      <description>工作中有一个定制需求：根据不同的用户需求，需要替换APP内的图片，以及部分代码里面的配置信息，打出不同的apk交给客户使用。如果只用生成少量</description>
     </item>
     
   </channel>
