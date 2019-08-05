@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>webpack使用初探 - smartzheng</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smartzheng" /><meta name="description" content="1.webpack是什么，解决了什么问题 模块打包工具,能简化复杂的模块引入,解决模块之间的相互依赖的问题. 2.模块是什么,如何使用模块 mod" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/webpack%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="webpack使用初探" />
+<meta property="og:description" content="1.webpack是什么，解决了什么问题 模块打包工具,能简化复杂的模块引入,解决模块之间的相互依赖的问题. 2.模块是什么,如何使用模块 mod" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/webpack%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/" />
+<meta property="article:published_time" content="2019-08-05T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-08-05T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="webpack使用初探">
+<meta itemprop="description" content="1.webpack是什么，解决了什么问题 模块打包工具,能简化复杂的模块引入,解决模块之间的相互依赖的问题. 2.模块是什么,如何使用模块 mod">
+
+
+<meta itemprop="datePublished" content="2019-08-05T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-08-05T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1386">
+
+
+
+<meta itemprop="keywords" content="webpack," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="webpack使用初探"/>
+<meta name="twitter:description" content="1.webpack是什么，解决了什么问题 模块打包工具,能简化复杂的模块引入,解决模块之间的相互依赖的问题. 2.模块是什么,如何使用模块 mod"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smartzheng</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smartzheng</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">webpack使用初探</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-08-05 </span>
+        <div class="post-category">
+            <a href="/categories/web%E5%89%8D%E7%AB%AF/"> web前端 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-webpack是什么-解决了什么问题">1.webpack是什么，解决了什么问题</a></li>
+<li><a href="#2-模块是什么-如何使用模块">2.模块是什么,如何使用模块</a></li>
+<li><a href="#3-webpack使用初探">3.webpack使用初探</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h3 id="1-webpack是什么-解决了什么问题">1.webpack是什么，解决了什么问题</h3>
+
+<p>模块打包工具,能简化复杂的模块引入,解决模块之间的相互依赖的问题.</p>
+
+<h3 id="2-模块是什么-如何使用模块">2.模块是什么,如何使用模块</h3>
+
+<p>module:JS借鉴其他面向对象语言实现的一种文件分组机制,将大程序拆分成互相依赖的小文件,能提高代码的可维护性(解耦和复用).</p>
+
+<p><strong>常见规范</strong>：</p>
+
+<ul>
+<li>CommonJS(NodeJS):通用模块规范,主要由NodeJS具体实现,同步加载,不适用客户端<br /></li>
+<li>AMD(RequireJS): Asynchronous Module Definition异步加载某模块的规范</li>
+<li>CMD(SeaJS):Common Module Definition通用模块定义,由国内发展出来,SeaJS是其典型代表;模块内部的依赖在需要引入的时候再引入(懒加载)<br /></li>
+<li>UMD:是在当前JS执行环境中对以上几种模块规范定义的define,module.exports等进行判断,根据不同场所返回不同结果</li>
+<li>ES6模块(import,export):ES6在语言标准的层面上,实现了模块功能,而且实现得相当简单,完全可以取代CommonJS和AMD规范,是浏览器和服务器通用的模块解决方案。</li>
+</ul>
+
+<h3 id="3-webpack使用初探">3.webpack使用初探</h3>
+
+<p>新建空项目,在项目根目录依次执行以下命令初始化npm及webpack,最好选择非全局安装,因为有可能会有不同项目使用不同版本webpack的需求</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">npm init  
+npm install webpack  -D
+npm install webpack-cli -D</pre></td></tr></table>
+</div>
+</div>
+<p>新建src目录,在下面新建以下文件</p>
+
+<p><strong>index.html</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&#34;en&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>webpack<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;root&#34;</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./index.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><strong>index.js</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="nx">hello</span> <span class="nx">from</span> <span class="s2">&#34;./module&#34;</span><span class="p">;</span>
+
+<span class="nx">hello</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p><strong>module.js</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">const</span> <span class="nx">hello</span> <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+    <span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;Hello&#39;</span><span class="p">;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">div</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="nx">hello</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>我们希望在打开index.html时在浏览器显示&rsquo;hello&rsquo;,但实际上运行时是会报Unexpected identifier错的,因为浏览器并不能识别index.js中的hello,也就是无法处理模块之间的依赖导入.这时我们需要使用webpack进行打包处理(也可以在引入index.js时加上type=&ldquo;module&rdquo;使浏览器识别module,不过webpack的作用远不止于此,这里只是用处理模块依赖简单使用webpack)</p>
+
+<p>webpack会有自己的默认配置,可以在项目根目录新建webpack.config.js文件,webpack会自动更换为根据该配置文件进行打包.下面为简单配置:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">mode</span><span class="o">:</span> <span class="s1">&#39;development&#39;</span><span class="p">,</span><span class="c1">//打包模式,默认为production,development不会对打包出的js进行压缩
+</span><span class="c1"></span>    <span class="nx">entry</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">main</span><span class="o">:</span> <span class="s1">&#39;./src/index.js&#39;</span><span class="p">,</span><span class="c1">//打包入口文件
+</span><span class="c1"></span>    <span class="p">},</span>
+    <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">filename</span><span class="o">:</span> <span class="s2">&#34;bundle.js&#34;</span><span class="p">,</span><span class="c1">//输出文件
+</span><span class="c1"></span>        <span class="nx">path</span><span class="o">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">)</span><span class="c1">//输出地址和文件名
+</span><span class="c1"></span>    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>这里我们指定了webpack打包的模式,入口文件,输出文件地址和文件名;执行以下命令即可完成打包:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">npx webpack</pre></td></tr></table>
+</div>
+</div>
+<p>由于是非全局安装,所以需要加上npx,可以在package.json文件中配置scripts:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">&#34;scripts&#34;: {
+    &#34;bundle&#34;: &#34;webpack&#34;
+},</pre></td></tr></table>
+</div>
+</div>
+<p>执行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">npm run bundle</pre></td></tr></table>
+</div>
+</div>
+<p>即可完成打包,当然也可以配置成其他命令名,由于配置的scripts会在node_modules去寻找命令,所以不再需要添加npx</p>
+
+<p>打包完成后,会在根目录生成dist文件夹,里面有一个bundle.js文件,将index.html拷贝到dist,修改引入的script为bundle.js,在浏览器打开,发现已经正常显示hello</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">smartzheng</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-08-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/webpack/">webpack</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/java%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/">
+            <span class="next-text nav-default">Java并发：多线程安全总结</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:smartzheng1993@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/smartzheng" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/2062336885/profile?topnav=1&amp;wvr=6" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/liu-xia-hui-89-70" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://www.douban.com/people/smartzheng/" class="iconfont icon-douban" title="douban"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
