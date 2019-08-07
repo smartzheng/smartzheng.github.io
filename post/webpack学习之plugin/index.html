@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Webpack学习：plugin - smartzheng</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smartzheng" /><meta name="description" content="1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Webpack学习：plugin" />
+<meta property="og:description" content="1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/" />
+<meta property="article:published_time" content="2019-08-07T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-08-07T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="Webpack学习：plugin">
+<meta itemprop="description" content="1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类">
+
+
+<meta itemprop="datePublished" content="2019-08-07T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-08-07T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1495">
+
+
+
+<meta itemprop="keywords" content="webpack," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Webpack学习：plugin"/>
+<meta name="twitter:description" content="1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smartzheng</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smartzheng</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Webpack学习：plugin</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-08-07 </span>
+        <div class="post-category">
+            <a href="/categories/web%E5%89%8D%E7%AB%AF/"> web前端 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-plugin和loader的区别">1.plugin和loader的区别</a>
+<ul>
+<li><a href="#loader">loader:</a></li>
+<li><a href="#plugin">plugin</a></li>
+</ul></li>
+<li><a href="#2-使用">2.使用</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h3 id="1-plugin和loader的区别">1.plugin和loader的区别</h3>
+
+<h4 id="loader">loader:</h4>
+
+<p>webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类型的文件，并将它们转换为有效 模块，以供应用程序使用，以及被添加到依赖图中。</p>
+
+<p>思考如下webpack.config.js配置:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-JavaScript" data-lang="JavaScript"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-JavaScript" data-lang="JavaScript"><span class="k">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">filename</span><span class="o">:</span> <span class="s1">&#39;bundle.js&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">module</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.txt$/</span><span class="p">,</span> <span class="nx">use</span><span class="o">:</span> <span class="s1">&#39;raw-loader&#39;</span> <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>它告诉webpack编译器在打包过程中，碰到「在 require()/import语句中被解析为&rsquo;.txt&rsquo;的路径」时，在对它打包之前，先使用raw-loader转换一下。”</p>
+
+<h4 id="plugin">plugin</h4>
+
+<p>loader用于转换某些类型的模块，而插件则可以用于执行范围更广的任务。包括：打包优化，资源管理，注入环境变量。</p>
+
+<p>思考如下webpack.config.js配置:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;); // 通过 npm 安装
+const webpack = require(&#39;webpack&#39;); // 用于访问内置插件
+
+module.exports = {
+  module: {
+    rules: []
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: &#39;./src/index.html&#39;})
+  ]
+};</pre></td></tr></table>
+</div>
+</div>
+<p>它告诉webpack编译器在打包过程中需要使用到plugin，而什么时候使用什么plugin，则根据plugin的具体实现而定</p>
+
+<p><strong>总结：
+loader用于对模块源码的转换，定义webpack如何处理非javascript模块，并且在buld中引入这些依赖。loader可以将文件从不同的语言（如TypeScript）转换为JavaScript，或者将内联图像转换为data URL。而plugin可以解决loader无法实现的其他事，从打包优化和压缩，到重新定义环境变量，功能强大到可以用来处理各种各样的任务。</strong></p>
+
+<h3 id="2-使用">2.使用</h3>
+
+<p>以HtmlWebpackPlugin为例，当我们只使用loader打包时，打包出的文件夹（假设为输出路径名为dist）里并不含有html文件，必须手动复制到dist文件夹下，并且手动更改引入的js文件为打包生成的js文件。而HtmlWebpackPlugin可以自动处理这个问题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">const</span> <span class="nx">HtmlWebpackPlugin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;html-webpack-plugin&#39;</span><span class="p">);</span> <span class="c1">// 通过 npm 安装
+</span><span class="c1"></span><span class="k">const</span> <span class="nx">webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;webpack&#39;</span><span class="p">);</span> <span class="c1">// 用于访问内置插件
+</span><span class="c1"></span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">entry</span><span class="o">:</span> <span class="s1">&#39;index.js&#39;</span><span class="p">,</span>
+  <span class="nx">output</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">path</span><span class="o">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;./dist&#39;</span><span class="p">),</span>
+    <span class="nx">filename</span><span class="o">:</span> <span class="s1">&#39;bundle.js&#39;</span>
+  <span class="p">},</span>
+  <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span>
+    <span class="k">new</span> <span class="nx">HtmlWebpackPlugin</span><span class="p">()</span>
+  <span class="p">]</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>执行打包后就会在dist目录下生成index.html：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>webpack App<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;bundle.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>如果希望使用src下自己的index.html，可以配置：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html">module.exports = {
+  entry: &#39;index.js&#39;,
+  output: {
+    path: path.resolve(__dirname, &#39;./dist&#39;),
+    filename: &#39;bundle.js&#39;
+  },
+  plugins: [new HtmlWebpackPlugin({  
+      filename: &#39;bundle.html&#39;,//自定义输出html的名字
+      template: &#39;src/index.html&#39;//以自己的html文件为模板    
+  })]
+};</code></pre></td></tr></table>
+</div>
+</div>
+<p>该配置代表，生成之后的文件名为bundle.html，它的内容等于在src/index.html文件中自动插入<script src="bundle.js"></script>的结果
+往往一个插件的配置项有很多，可以在其官方地址查看，HtmlWebpackPlugin的options文档地址为：<a href="https://github.com/jantimon/html-webpack-plugin#options">https://github.com/jantimon/html-webpack-plugin#options</a></p>
+
+<p><a href="https://webpack.docschina.org/plugins/">这里</a>列举了很多webpack官方推荐的plugin，常用的除了上面的html-webpack-plugin，还有：</p>
+
+<ul>
+<li>clean-webpack-plugin：每次构建前清理/dist文件夹，防止新旧打包生成的代码混合</li>
+<li>webpack.HotModuleReplacementPlugin：webpack自带，热替换插件<br /></li>
+<li>uglifyjs-webpack-plugin：js代码压缩<br /></li>
+<li>optimize-css-assets-webpack-plugin：CSS压缩优化<br /></li>
+<li>mini-css-extract-plugin：将CSS提取为独立的文件的插件，对每个包含css的js文件都会创建一个CSS文件<br /></li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">smartzheng</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-08-07
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/webpack/">webpack</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/">
+            <span class="next-text nav-default">webpack学习： loader</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:smartzheng1993@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/smartzheng" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/2062336885/profile?topnav=1&amp;wvr=6" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/liu-xia-hui-89-70" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://www.douban.com/people/smartzheng/" class="iconfont icon-douban" title="douban"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

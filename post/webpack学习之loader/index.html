@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>webpack学习： loader - smartzheng</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smartzheng" /><meta name="description" content="1.什么是loader webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js. Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration 在webpack中,通" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="webpack学习： loader" />
+<meta property="og:description" content="1.什么是loader webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js. Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration 在webpack中,通" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/" />
+<meta property="article:published_time" content="2019-08-07T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-08-07T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="webpack学习： loader">
+<meta itemprop="description" content="1.什么是loader webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js. Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration 在webpack中,通">
+
+
+<meta itemprop="datePublished" content="2019-08-07T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-08-07T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1715">
+
+
+
+<meta itemprop="keywords" content="webpack," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="webpack学习： loader"/>
+<meta name="twitter:description" content="1.什么是loader webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js. Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration 在webpack中,通"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smartzheng</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smartzheng</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">webpack学习： loader</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-08-07 </span>
+        <div class="post-category">
+            <a href="/categories/web%E5%89%8D%E7%AB%AF/"> web前端 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-什么是loader">1.什么是loader</a></li>
+<li><a href="#2-loader的使用">2.loader的使用</a>
+<ul>
+<li><a href="#文件">文件</a></li>
+<li><a href="#样式">样式</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h3 id="1-什么是loader">1.什么是loader</h3>
+
+<blockquote>
+<p>webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js.</p>
+
+<p>Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration</p>
+</blockquote>
+
+<p><strong>在webpack中,通过配置loader可以对js之外的任何静态资源进行预处理</strong></p>
+
+<p>通过Node.js的require()语句可以使用loader,不同的文件可以通过正则表达式匹配使用不同的loader来处理</p>
+
+<p>常见的loader按处理内容不同来进行分类,如处理文件,JSON,转译,模板,样式,代码检测和测试,框架等的loader</p>
+
+<h3 id="2-loader的使用">2.loader的使用</h3>
+
+<p>使用loader首先需要安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">npm install loaderName --save-dev</pre></td></tr></table>
+</div>
+</div>
+<p>然后在webpack.config.js中进行loader配置,需要注意的是use数组中有多个loader对文件进行处理时,处理顺序为从数组最后一个loader依次往前,如下例中,某个.png图片会先被url-loader处理,再被file-loader处理,常见配置如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">module</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">rules</span><span class="o">:</span> <span class="p">[</span>	<span class="c1">//rules数组配置不同文件类型(test)的情况下使用(use)指定的loader
+</span><span class="c1"></span>      <span class="p">{</span>
+        <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.(png|jpe?g|gif)$/</span><span class="p">,</span>  <span class="c1">//需要被该loader处理的文件正则表达式
+</span><span class="c1"></span>        <span class="nx">use</span><span class="o">:</span> <span class="p">[</span>  <span class="c1">//对匹配到正则的文件进行处理的loader数组
+</span><span class="c1"></span>          <span class="p">{</span>
+            <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;file-loader&#39;</span><span class="p">,</span>  <span class="c1">//loader名字
+</span><span class="c1"></span>            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>  <span class="c1">//该loader的可选配置项,如输出路径,文件名等,可接收方法
+</span><span class="c1"></span>            	 <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;[path][name].[ext]&#39;</span>
+            <span class="p">},</span>  
+          <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;url-loader&#39;</span><span class="p">,</span>  
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{}</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nx">test</span><span class="o">:</span> <span class="sr">/\.css$/</span><span class="p">,</span>  
+        <span class="nx">use</span><span class="o">:</span> <span class="p">[</span>  
+          <span class="p">{</span>
+            <span class="nx">loader</span><span class="o">:</span> <span class="s1">&#39;css-loader&#39;</span><span class="p">,</span>  
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>  
+              
+            <span class="p">},</span>  
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+<span class="p">};</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p><strong>在webpack官网<a href="https://webpack.docschina.org/loaders/">webpack-loaders</a>列出了常见的loader,如常见的打包静态资源的loader有:</strong></p>
+
+<h4 id="文件">文件</h4>
+
+<ul>
+<li>file-loader: 将文件发送到输出文件夹(options中配置name)</li>
+<li>url-loader:  和file-loader类似，options可以配置limit值,如文件小于该大小,会被直接处理为base64数据写入到打包生成的js文件中,这样可以减少一次请求,但是会影响js脚本加载速度,所以limit值应该设置得不要太大</li>
+</ul>
+
+<h4 id="样式">样式</h4>
+
+<ul>
+<li>style-loader 将模块的导出作为样式添加到DOM中</li>
+<li>css-loader 解析CSS文件后，使用import加载，并且返回CSS代码<br /></li>
+<li>less-loader 加载和转译LESS文件</li>
+<li>sass-loader 加载和转译SASS/SCSS文件</li>
+<li>stylus-loader 加载和转译Stylus文件</li>
+<li>postcss-loader 使用PostCSS加载和转译CSS/SSS文件</li>
+</ul>
+
+<p><strong>style-loader和css-loader往往配合使用,less,sass,stylus等loader是对非.css类型样式文件做加载转译的loader,由于loader的处理顺序是从后往前,所以一般css,less等loader写在后面;</strong></p>
+
+<p><strong>下面是css-loader一些常见的options配置:</strong>
+- <strong>importLoaders: number</strong> 假如在use数组中配置了多个loader,某些情况下可能会出现部分文件不会被后面的loader处理的情况,比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">{
+  test: /\.scss$/,  
+  use: [  
+    {
+      loader: &#39;css-loader&#39;,  
+      options: {  
+         //importLoaders:2     
+      },  
+    },
+    &#39;sass-loader&#39;,
+    &#39;postcss-loader&#39;
+  ]
+},</pre></td></tr></table>
+</div>
+</div>
+<p>在使用@import引入scss时,被引入的scss文件可能可能不会被sass-loader,postcss-loader处理,这时指定importLoaders:2可以强制所有.scss都会被sass-loader,postcss-loader处理(实际使用上基本不会出现这种情况)</p>
+
+<ul>
+<li><strong>modules: true/false</strong> 在引入css时,如果采用类似<code>import './index.css'</code>的方式引入css文件,那么该css文件会作用于全局;也就是说假如在<code>index.js</code>中<code>import './index.css'</code>,那么在<code>index.js</code>中引入的其他模块也会使用到<code>index.css</code>,设置modules: true并且使用<code>import style from './index.css'</code>的方式引入(style为自定义名字),在使用css样式时使用style.className的方式使用则可以避免这个问题</li>
+</ul>
+
+<p><strong>postcss-loader需要新建并配合postcss.config.js使用:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">module.exports = {
+  parser: &#39;sugarss&#39;,
+  plugins: {//配置插件,也可以写成数组形式,见下个例子
+    &#39;postcss-import&#39;: {},
+    &#39;postcss-preset-env&#39;: {},
+    &#39;autoprefixer&#39;: {}
+  }
+}</pre></td></tr></table>
+</div>
+</div>
+<p>plugins中配置postcss插件,常用的插件有autoprefixer(解决css3的兼容性):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">module.exports = {
+    plugins: [
+        require(&#39;autoprefixer&#39;)({
+            &#34;browsers&#34;: [  //配置兼容的浏览器范围
+                &#34;defaults&#34;,
+                &#34;not ie &lt; 11&#34;,
+                &#34;last 2 versions&#34;,
+                &#34;&gt; 1%&#34;,
+                &#34;iOS 7&#34;,
+                &#34;last 3 iOS versions&#34;
+            ]
+        })
+    ]
+};</pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">smartzheng</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-08-07
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/webpack/">webpack</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Webpack学习：plugin</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8B%E4%BD%BF%E7%94%A8%E5%88%9D%E6%8E%A2/">
+            <span class="next-text nav-default">webpack学习：使用初探</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:smartzheng1993@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/smartzheng" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/2062336885/profile?topnav=1&amp;wvr=6" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/liu-xia-hui-89-70" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://www.douban.com/people/smartzheng/" class="iconfont icon-douban" title="douban"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

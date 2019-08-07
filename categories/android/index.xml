@@ -13,10 +13,10 @@
     
     <item>
       <title>Java并发：多线程安全总结</title>
-      <link>https://smartzheng.github.io/post/java%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</link>
+      <link>https://smartzheng.github.io/post/java%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://smartzheng.github.io/post/java%E5%B9%B6%E5%8F%91%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://smartzheng.github.io/post/java%E5%B9%B6%E5%8F%91%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%BB%E7%BB%93/</guid>
       <description>1.并发基础 定义：一个cpu“同时”处理多个任务，而多个线程都在争取这个cpu资源 1.1 优点 充分发挥多核CPU的计算能力 方便进行业务拆分，提升应</description>
     </item>
     
