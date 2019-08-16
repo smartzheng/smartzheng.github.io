@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>React on smartzheng</title>
+    <link>https://smartzheng.github.io/tags/react/</link>
+    <description>Recent content in React on smartzheng</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 15 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://smartzheng.github.io/tags/react/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>深入学习React Hooks</title>
+      <link>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0react-hooks/</link>
+      <pubDate>Thu, 15 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E5%AD%A6%E4%B9%A0react-hooks/</guid>
+      <description>Hooks 是React的一次革命性升级，本文将对其优势和API进行比较全面的解析 为什么要有hooks 在没有hooks之前，除了对于一些无状态组件可以</description>
+    </item>
+    
+  </channel>
+</rss>
