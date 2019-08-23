@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>深入理解JavaScript之作用域闭包.md - smartzheng</title>
+  <title>深入理解JavaScript之作用域闭包 - smartzheng</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -38,14 +38,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="深入理解JavaScript之作用域闭包.md" />
+<meta property="og:title" content="深入理解JavaScript之作用域闭包" />
 <meta property="og:description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%97%AD%E5%8C%85/" />
 <meta property="article:published_time" content="2019-08-23T00:00:00&#43;00:00"/>
 <meta property="article:modified_time" content="2019-08-23T00:00:00&#43;00:00"/>
 
-<meta itemprop="name" content="深入理解JavaScript之作用域闭包.md">
+<meta itemprop="name" content="深入理解JavaScript之作用域闭包">
 <meta itemprop="description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，">
 
 
@@ -57,7 +57,7 @@
 
 <meta itemprop="keywords" content="JavaScript," />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="深入理解JavaScript之作用域闭包.md"/>
+<meta name="twitter:title" content="深入理解JavaScript之作用域闭包"/>
 <meta name="twitter:description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，"/>
 
 <!--[if lte IE 9]>
@@ -121,12 +121,12 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">深入理解JavaScript之作用域闭包.md</h1>
+      <h1 class="post-title">深入理解JavaScript之作用域闭包</h1>
 
       <div class="post-meta">
         <span class="post-time"> 2019-08-23 </span>
         <div class="post-category">
-            <a href="/categories/%E5%89%8D%E7%AB%AF/"> 前端 </a>
+            <a href="/categories/web%E5%89%8D%E7%AB%AF/"> web前端 </a>
             </div>
         
       </div>
@@ -135,30 +135,15 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#何为闭包">何为闭包</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-</ul>
-</nav>
+    
   </div>
 </div>
     <div class="post-content">
-      
-
-<p><strong><em>在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，所以闭包在Java中并不是一个很需要讨论的问题，虽然Java开发（尤其是Android开发）中内存泄漏的原因和JS中因为闭包导致的内存泄漏很类似。</em></strong></p>
+      <p><strong><em>在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，所以闭包在Java中并不是一个很需要讨论的问题，虽然Java开发（尤其是Android开发）中内存泄漏的原因和JS中因为闭包导致的内存泄漏很类似。</em></strong></p>
 
 <p><strong><em>而JavaScript中，闭包无处不在，不过鲜有开发者能透彻地领悟它的意义。之前学习JS时，参考的是《JavaScript高级程序设计》，关于闭包，这本书讲的不可谓不深入，但总感觉理解的不是那么全面，似懂非懂，最近又仔细结合《你不知道的JavaScript》进一步加深了理解。</em></strong></p>
 
-<h4 id="何为闭包">何为闭包</h4>
+<p><strong>何为闭包</strong></p>
 
 <p>先来看这个来自《JavaScript高级程序设计》中的例子：</p>
 <div class="highlight"><div class="chroma">
