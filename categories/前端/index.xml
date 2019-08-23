@@ -20,14 +20,5 @@
       <description>在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，</description>
     </item>
     
-    <item>
-      <title>React Hooks学习：优势及使用</title>
-      <link>https://smartzheng.github.io/post/react-hooks%E5%AD%A6%E4%B9%A0%E4%BC%98%E5%8A%BF%E5%8F%8A%E4%BD%BF%E7%94%A8/</link>
-      <pubDate>Thu, 15 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://smartzheng.github.io/post/react-hooks%E5%AD%A6%E4%B9%A0%E4%BC%98%E5%8A%BF%E5%8F%8A%E4%BD%BF%E7%94%A8/</guid>
-      <description>Hooks 是React的一次革命性升级，本文将对其优势和API进行比较全面的解析 为什么要有hooks 在没有hooks之前，除了对于一些无状态组件可以</description>
-    </item>
-    
   </channel>
 </rss>

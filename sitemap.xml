@@ -58,6 +58,12 @@
   </url>
   
   <url>
+    <loc>https://smartzheng.github.io/categories/web%E5%89%8D%E7%AB%AF/</loc>
+    <lastmod>2019-08-15T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://smartzheng.github.io/tags/webpack/</loc>
     <lastmod>2019-08-08T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -68,12 +74,6 @@
     <lastmod>2019-08-08T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://smartzheng.github.io/categories/web%E5%89%8D%E7%AB%AF/</loc>
-    <lastmod>2019-08-08T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
