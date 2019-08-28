@@ -6,10 +6,19 @@
     <description>Recent content in web前端 on smartzheng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 23 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 28 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/categories/web%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>深入理解JavaScript之执行环境和作用域链</title>
+      <link>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE/</link>
+      <pubDate>Wed, 28 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE/</guid>
+      <description>引言 在Java中，被花括号包起的代码具有独立的作用域，这一点与大部分语言都差不多，在理解和使用上都很简单，而JS中的作用域却相对较为复杂，例</description>
+    </item>
     
     <item>
       <title>深入理解JavaScript之作用域闭包</title>
