@@ -6,10 +6,19 @@
     <description>Recent content in web前端 on smartzheng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 28 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/categories/web%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>深入理解JavaScript之this解析</title>
+      <link>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8Bthis%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Fri, 27 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8Bthis%E8%A7%A3%E6%9E%90/</guid>
+      <description>引言 在过去用Java或Kotlin进行Android开发的时候，this从来不是一个问题，即使是在内部类中this也存在指向问题，但是使用t</description>
+    </item>
     
     <item>
       <title>深入理解JavaScript之执行环境和作用域链</title>
