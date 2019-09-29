@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>深入理解JavaScript之原型与原型链 - smartzheng</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smartzheng" /><meta name="description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E5%8E%9F%E5%9E%8B%E4%B8%8E%E5%8E%9F%E5%9E%8B%E9%93%BE/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="深入理解JavaScript之原型与原型链" />
+<meta property="og:description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E5%8E%9F%E5%9E%8B%E4%B8%8E%E5%8E%9F%E5%9E%8B%E9%93%BE/" />
+<meta property="article:published_time" content="2019-09-29T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-09-29T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="深入理解JavaScript之原型与原型链">
+<meta itemprop="description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，">
+
+
+<meta itemprop="datePublished" content="2019-09-29T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-09-29T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2619">
+
+
+
+<meta itemprop="keywords" content="JavaScript," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解JavaScript之原型与原型链"/>
+<meta name="twitter:description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smartzheng</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smartzheng</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">深入理解JavaScript之原型与原型链</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-09-29 </span>
+        <div class="post-category">
+            <a href="/categories/web%E5%89%8D%E7%AB%AF/"> web前端 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p><strong>JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，即使ES6之后有了class，其实现和其他面向对象语言依然有本质不同。而JavaScript中模拟继承的方式则是通过原型链</strong></p>
+
+<p>1、什么是原型和原型链？</p>
+
+<p>JavaScript中，对象实例在创建的时候会关联一个[[Prototype]]属性，即对象的原型</p>
+
+<p>ES6之前标准并没有定义获取原型对象的方法，但是基本所有浏览器都支持通过<code>__proto__</code>来获取，而ES6之后则提供了Object.getPrototypeOf()方法</p>
+
+<p>当我们对对象进行“对象.属性名”操作时，如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;smartzheng&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>这里会调用a对象的[[Get]]属性，如果a对象含有name属性，那么a.name直接返回这个属性，如果a中没有该属性的话就会使用到原型了：会在<code>a.__proto__</code>得到的原型对象中去寻找name属性，如果还找不到，就会在<code>a.__proto__.__proto__</code>（如果有的话）中去找&hellip;当然这也有一个终点，也就是Object.prototype：这就形成了原型链</p>
+
+<p>2、原型链和原型继承</p>
+
+<p>继续详细分析一下JavaScript中的原型和原型链</p>
+
+<p>我们知道，创建对象常用的有3种方式：字面量，new和Object.create()；上面说到，对象在创建的时候会有一个[[Prototype]]属性，它其实是对另一个对象的引用，我们称之为该实例的原型对象</p>
+
+<p>分别来分析一下前面提到的三种方法创建对象之后默认关联的原型对象：</p>
+
+<p>1）字面量形式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>下面是<code>a.__proto__</code>打印出的结果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+	<span class="err">constructor:</span> <span class="err">ƒ,</span> 
+	<span class="err">__defineGetter__:</span> <span class="err">ƒ,</span>
+	 <span class="err">__defineSetter__:</span> <span class="err">ƒ,</span>   
+	<span class="err">hasOwnProperty:</span> <span class="err">ƒ,</span> 
+	<span class="err">__lookupGetter__:</span> <span class="err">ƒ,</span>
+	<span class="err">…</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>展开下一级之后为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+	<span class="err">constructor:</span> <span class="err">ƒ</span> <span class="err">Object()</span>
+	<span class="err">hasOwnProperty:</span> <span class="err">ƒ</span> <span class="err">hasOwnProperty()</span>
+	<span class="err">isPrototypeOf:</span> <span class="err">ƒ</span> <span class="err">isPrototypeOf()</span>
+	<span class="err">propertyIsEnumerable:</span> <span class="err">ƒ</span> <span class="err">propertyIsEnumerable()</span>
+	<span class="err">toLocaleString:</span> <span class="err">ƒ</span> <span class="err">toLocaleString()</span>
+	<span class="err">toString:</span> <span class="err">ƒ</span> <span class="err">toString()</span>
+	<span class="err">valueOf:</span> <span class="err">ƒ</span> <span class="err">valueOf()</span>
+	<span class="err">__defineGetter__:</span> <span class="err">ƒ</span> <span class="err">__defineGetter__()</span>
+	<span class="err">__defineSetter__:</span> <span class="err">ƒ</span> <span class="err">__defineSetter__()</span>
+	<span class="err">__lookupGetter__:</span> <span class="err">ƒ</span> <span class="err">__lookupGetter__()</span>
+	<span class="err">__lookupSetter__:</span> <span class="err">ƒ</span> <span class="err">__lookupSetter__()</span>
+	<span class="err">get</span> <span class="err">__proto__:</span> <span class="err">ƒ</span> <span class="err">__proto__()</span>
+	<span class="err">set</span> <span class="err">__proto__:</span> <span class="err">ƒ</span> <span class="err">__proto__()</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这里可以发现几个熟悉的方法，如valueOf、toString、toLocaleString；其实这些都是Object的prototype中的方法，而我们使用字面量方式创建的对象实际上在创建时也默认将Object.prototype赋值给了它的<code>__proto__</code>，所以<code>a.__proto__ === Object.prototype</code>为true，这也是为什么所有对象都默认可以使用前面提到的几个方法的原因</p>
+
+<p>2）new</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>显然，new和字面量创建对象一样，都是将Object.prototype赋值给了实例的原型对象</p>
+
+<p>3）Object.create()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>可见，Object.create()是将传入对象直接赋值给了新实例的原型对象属性</p>
+
+<p>通过上面的分析可以看出，三种方式创建对象都为实例默认关联了一个原型对象，通过__proto__或者Object.getPrototypeOf()可以获取，如果是字面量模式，则新实例的原型对象即Object.prototype，但是new和Object.create()的话则可以自定义默认关联的原型对象：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Foo</span><span class="p">(){</span>
+	<span class="c1">//...
+</span><span class="c1"></span><span class="p">}</span>
+<span class="kd">var</span> <span class="nx">f1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>3、“类”、“构造函数”和“继承”</p>
+
+<p>最后再看一个全面的例子:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Foo</span><span class="p">(){</span>
+	<span class="c1">//...
+</span><span class="c1"></span><span class="p">}</span>
+<span class="kd">var</span> <span class="nx">f1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">)</span> <span class="c1">//{constructor: ƒ Foo(), __proto__: Object}
+</span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">f1</span><span class="p">)</span> <span class="o">===</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">f2</span><span class="p">)</span> <span class="o">===</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>在JavaScript中经常把首字母大写的function称之为“类”，例如上面的Foo，这里Foo.prototype包含两个属性，constructor属性指向Foo()自身，当我们使用new调用Foo()时，实际上执行了以下几步：<br />
+1）创建一个新对象：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">const</span> <span class="nx">f1</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>2）设置新对象的constructor属性为构造函数的名称，设置新对象的__proto__属性指向构造函数的prototype对象：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">f1</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Foo</span><span class="p">;</span>   
+<span class="nx">f1</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">=</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span>  
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>3）使用新对象调用函数，函数中的this被指向新实例对象：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">Foo</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">f1</span><span class="p">)</span> 
+</code></pre></td></tr></table>
+</div>
+</div>
+<p>4）将初始化完毕的新对象地址，保存到等号左边的变量中</p>
+
+<p>很多人习惯称Foo为一个类，它的实例f1的原型对象对Foo的prototype，Foo也有一个__proto__属性，指向的是Object.prototype，根据前面的逻辑，在f1若找不到某个属性，则会在f1.__proto__，也就是Foo.prototype中寻找该属性，如果从f1.__proto__中取不到对应的属性，则会在f1.__proto__.__proto__即Object.prototype中寻找该属性，若还找不到，则返回undefined</p>
+
+<p>这一表现确实和继承很像：有一个顶级的父类Object，所有对象都是它的实例或者它子类的实例，所有这些实例都可以使用这个顶级父类中定义的方法，比如上面的Foo可以理解成继承自Object，其实例f1可以使用Foo.prototype中定义的属性，如果找不到则使用父类Object.prototype中的属性；这虽然看起来很像面向对象编程中的继承，但是JavaScript中实际上没有继承（实际上从new的工作原理看来JavaScript也算不上有类，并没有类实例的拷贝操作），只是通过原型链的方式实现了类似继承的表现</p>
+
+<p>在Java中，所有类都继承自Object，所有的类的实例对象都可以使用Object中的方法，比如hashCode，equals等，但是与JavaScript不同的是，在Java中，继承的含义是指每一个子类中都有父类方法和属性的一份拷贝，在父类中定义了一个方法，子类可以直接使用也可以重写覆盖，但是子类都是调用的自己的属性和方法</p>
+
+<p>而在JavaScript中其实只是建立了对象之间的关联，当在对象自己的属性中找不到想要获取的属性时，就会去关联在它的<code>__proto__</code>属性上的对象中去找，更像是一种委托</p>
+
+<p>4、总结</p>
+
+<p>下面这张图很形象的说明了文中各个角色的关系：</p>
+
+<p><img src = "https://raw.githubusercontent.com/smartzheng/images/master/%E5%8E%9F%E5%9E%8B%E5%92%8C%E5%8E%9F%E5%9E%8B%E9%93%BE.png" width="80%"/></p>
+
+<p>1）每一个函数通过new会创建一个以该函数的prototype为原型对象的实例，可以通过对象的__proto<strong>属性获取该原型对象<br />
+2）函数的prototype中有两个属性，constructor指向自身，具体调用时机和方式参见上文关于new的分析，另一个属性__proto</strong>指向上一级关联的原型对象（最高为Object.prototype）
+3）当实例触发[[Get]]操作时首先从自己内部查找属性，若找不到则依次通过__proto__往上找，从而形成了原型链</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">smartzheng</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-09-29
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/javascript/">JavaScript</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8Bthis%E8%A7%A3%E6%9E%90/">
+            <span class="next-text nav-default">深入理解JavaScript之this解析</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:smartzheng1993@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/smartzheng" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/2062336885/profile?topnav=1&amp;wvr=6" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/liu-xia-hui-89-70" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://www.douban.com/people/smartzheng/" class="iconfont icon-douban" title="douban"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
