@@ -6,10 +6,19 @@
     <description>Recent content on smartzheng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 29 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Android源码分析之源码导入AndroidStudio和Eclipse</title>
+      <link>https://smartzheng.github.io/post/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%BA%90%E7%A0%81%E5%AF%BC%E5%85%A5androidstudio%E5%92%8Ceclipse/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%BA%90%E7%A0%81%E5%AF%BC%E5%85%A5androidstudio%E5%92%8Ceclipse/</guid>
+      <description>之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Android</description>
+    </item>
     
     <item>
       <title>深入理解JavaScript之原型与原型链</title>
@@ -261,6 +270,16 @@
       
       <guid>https://smartzheng.github.io/post/%E6%88%91%E7%9A%84%E8%AF%BB%E4%B9%A6%E5%8F%B2/</guid>
       <description>我出生在农村，家里条件不是很好。小时候喜欢节约一点钱买一块钱一本的连环画。奥特曼、数码宝贝都是我的最爱。还有能记得的就是那时候在同学那里借来</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://smartzheng.github.io/post/%E9%80%90%E8%A1%8C%E7%90%86%E8%A7%A3create-react-app%E4%B8%AD%E7%9A%84package.json/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E9%80%90%E8%A1%8C%E7%90%86%E8%A7%A3create-react-app%E4%B8%AD%E7%9A%84package.json/</guid>
+      <description>下面是自己react项目初始化之后的package.json文件，除了个别自己新增依赖以外，基本是create-react-app生成的默认配置，下面是对package.json中每一行（除jest之外）的解释：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165  { &amp;#34;name&amp;#34;: &amp;#34;react-wanandroid&amp;#34;, //项目名 &amp;#34;version&amp;#34;: &amp;#34;0.</description>
     </item>
     
   </channel>

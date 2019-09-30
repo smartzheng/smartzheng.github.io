@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Android源码分析之源码导入AndroidStudio和Eclipse - smartzheng</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smartzheng" /><meta name="description" content="之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Android" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://smartzheng.github.io/post/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%BA%90%E7%A0%81%E5%AF%BC%E5%85%A5androidstudio%E5%92%8Ceclipse/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Android源码分析之源码导入AndroidStudio和Eclipse" />
+<meta property="og:description" content="之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Android" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://smartzheng.github.io/post/android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E6%BA%90%E7%A0%81%E5%AF%BC%E5%85%A5androidstudio%E5%92%8Ceclipse/" />
+<meta property="article:published_time" content="2019-09-30T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2019-09-30T00:00:00&#43;00:00"/>
+
+<meta itemprop="name" content="Android源码分析之源码导入AndroidStudio和Eclipse">
+<meta itemprop="description" content="之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Android">
+
+
+<meta itemprop="datePublished" content="2019-09-30T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-09-30T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1110">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android源码分析之源码导入AndroidStudio和Eclipse"/>
+<meta name="twitter:description" content="之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Android"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smartzheng</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smartzheng</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Android源码分析之源码导入AndroidStudio和Eclipse</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-09-30 </span>
+        <div class="post-category">
+            <a href="/categories/android/"> Android </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>之前学习Android源码的时候用的sourceinsight，始终感觉类跳转不大精确而且使用久了会有卡顿，就一直想着如何能在Androidstudio或eclipse上查看在所有源码，网上查了很多资料大致有了思路。</p>
+
+<p>一、使用AndroidStudio</p>
+
+<p>第一步：安装VMware。这个很简单,官网下载安装(我用的云盘：<a href="http://pan.baidu.com/s/1gfxen7t">http://pan.baidu.com/s/1gfxen7t</a>)就行(如果慢的话可以在用百度网盘搜索：<a href="http://www.sobaidupan.com/">http://www.sobaidupan.com/</a>)。我下载的是12.5.7版本。</p>
+
+<p>第二步：安装Ubuntu。安装过程也很简单，参考百度经验足矣：<a href="http://jingyan.baidu.com/article/14bd256e0ca52ebb6d26129c.html">http://jingyan.baidu.com/article/14bd256e0ca52ebb6d26129c.html</a>。</p>
+
+<p>第三步：安装VMware-tools。因为需要将windows中的文件复制到Linux，所以需要安装此插件(也可以直接在Linux上下载，不过速度很慢)，也可以起到桌面全屏的效果，不然一小块界面很影响操作，点击虚拟机&gt;&gt;安装VMware tools，系统会下载对应的文件VMware tools，并加入驱动。点击进入该目录(文件夹中会有vmware-install.pl文件) 右键打开命令行终端，执行sudo  ./vmware-install.pl，输入密码完成安装。安装完成后重启Ubuntu生效,就可以直接将windows文件拖入Linux系统中。若直接拖入已解压文件会很慢，所以选择拖入压缩包再进行解压，Linux默认不支持rar，所以若为rar文件需要安装三方解压软件(unrar或者ark,不过亲测更改后缀为Zip有效)，读者自行安装,此处不再赘述（最好在Linux上用repo和git直接下载）。</p>
+
+<p>第四步：编译Android源码。具体参考<a href="http://www.jianshu.com/p/367f0886e62b">http://www.jianshu.com/p/367f0886e62b</a>。因为最后我选择使用eclipse进行源码查看。</p>
+
+<p>二、使用eclipse
+使用eclipse就比较简单了，而且对电脑内存和硬盘的要求很低。</p>
+
+<p>第一步、下载源码并解压，出现文件名重复直接覆盖。</p>
+
+<p>第二步、将\development\ide\eclipse下的。classpath文件拷贝到源码根目录。</p>
+
+<p>第三步、eclipse新建Java工程（不是AndroidProject，右键new&ndash;javproject），去掉勾选use degault location，选择为源码文件夹目录。点击finish完成。</p>
+
+<p>第四步、源码已经导入完成，但是会发现很多报错，因为是Java工程的原因。建议将error下划线去掉，改善一下阅读体验。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">smartzheng</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-09-30
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E5%8E%9F%E5%9E%8B%E4%B8%8E%E5%8E%9F%E5%9E%8B%E9%93%BE/">
+            <span class="next-text nav-default">深入理解JavaScript之原型与原型链</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:smartzheng1993@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/smartzheng" class="iconfont icon-github" title="github"></a>
+      <a href="https://weibo.com/2062336885/profile?topnav=1&amp;wvr=6" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="https://www.zhihu.com/people/liu-xia-hui-89-70" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="https://www.douban.com/people/smartzheng/" class="iconfont icon-douban" title="douban"></a>
+  <a href="https://smartzheng.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
