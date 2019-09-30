@@ -6,10 +6,19 @@
     <description>Recent content in web前端 on smartzheng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 29 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://smartzheng.github.io/categories/web%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>逐行理解create-react-app中的package.json</title>
+      <link>https://smartzheng.github.io/post/%E9%80%90%E8%A1%8C%E7%90%86%E8%A7%A3create-react-app%E4%B8%AD%E7%9A%84package.json/</link>
+      <pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E9%80%90%E8%A1%8C%E7%90%86%E8%A7%A3create-react-app%E4%B8%AD%E7%9A%84package.json/</guid>
+      <description>下面是自己react项目初始化之后的package.json文件，除了个别自己新增依赖以外，基本是create-react-app生成的默认</description>
+    </item>
     
     <item>
       <title>深入理解JavaScript之原型与原型链</title>
