@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E5%8E%9F%E5%9E%8B%E4%B8%8E%E5%8E%9F%E5%9E%8B%E9%93%BE/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E5%8E%9F%E5%9E%8B%E4%B8%8E%E5%8E%9F%E5%9E%8B%E9%93%BE/" />
-<meta property="article:published_time" content="2019-09-29T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2019-09-29T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2019-09-29T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-09-29T00:00:00+00:00" />
 <meta itemprop="name" content="深入理解JavaScript之原型与原型链">
 <meta itemprop="description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，">
-
-
 <meta itemprop="datePublished" content="2019-09-29T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-09-29T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="2620">
+<meta itemprop="wordCount" content="2625">
 
 
 
-<meta itemprop="keywords" content="JavaScript," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="JavaScript," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="深入理解JavaScript之原型与原型链"/>
 <meta name="twitter:description" content="JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，"/>
 
@@ -135,22 +131,18 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
       <p><strong>JavaScript是一门面向对象的语言，继承是面向对象的一大特性，但是严格来讲JavaScript中却没有通常含义上的继承，只能模拟继承，即使ES6之后有了class，其实现和其他面向对象语言依然有本质不同。而JavaScript中模拟继承的方式则是通过原型链</strong></p>
-
 <p>1、什么是原型和原型链？</p>
-
 <p>JavaScript中，对象实例在创建的时候会关联一个[[Prototype]]属性，即对象的原型</p>
-
 <p>ES6之前标准并没有定义获取原型对象的方法，但是基本所有浏览器都支持通过<code>__proto__</code>来获取，而ES6之后则提供了Object.getPrototypeOf()方法</p>
-
 <p>当我们对对象进行“对象.属性名”操作时，如：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -164,21 +156,15 @@
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>这里会调用a对象的[[Get]]属性，如果a对象含有name属性，那么a.name直接返回这个属性，如果a中没有该属性的话就会使用到原型了：会在<code>a.__proto__</code>得到的原型对象中去寻找name属性，如果还找不到，就会在<code>a.__proto__.__proto__</code>（如果有的话）中去找&hellip;当然这也有一个终点，也就是Object.prototype：这就形成了原型链</p>
-
+</div><p>这里会调用a对象的[[Get]]属性，如果a对象含有name属性，那么a.name直接返回这个属性，如果a中没有该属性的话就会使用到原型了：会在<code>a.__proto__</code>得到的原型对象中去寻找name属性，如果还找不到，就会在<code>a.__proto__.__proto__</code>（如果有的话）中去找&hellip;当然这也有一个终点，也就是Object.prototype：这就形成了原型链</p>
 <p>2、原型链和原型继承</p>
-
 <p>继续详细分析一下JavaScript中的原型和原型链</p>
-
 <p>我们知道，创建对象常用的有3种方式：字面量，new和Object.create()；上面说到，对象在创建的时候会有一个[[Prototype]]属性，它其实是对另一个对象的引用，我们称之为该实例的原型对象</p>
-
 <p>分别来分析一下前面提到的三种方法创建对象之后默认关联的原型对象：</p>
-
 <p>1）字面量形式</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
@@ -188,11 +174,10 @@
 </span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>下面是<code>a.__proto__</code>打印出的结果：</p>
+</div><p>下面是<code>a.__proto__</code>打印出的结果：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -209,13 +194,13 @@
 	<span class="err">hasOwnProperty:</span> <span class="err">ƒ,</span> 
 	<span class="err">__lookupGetter__:</span> <span class="err">ƒ,</span>
 	<span class="err">…</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>展开下一级之后为：</p>
+</div><p>展开下一级之后为：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -246,15 +231,14 @@
 	<span class="err">__lookupSetter__:</span> <span class="err">ƒ</span> <span class="err">__lookupSetter__()</span>
 	<span class="err">get</span> <span class="err">__proto__:</span> <span class="err">ƒ</span> <span class="err">__proto__()</span>
 	<span class="err">set</span> <span class="err">__proto__:</span> <span class="err">ƒ</span> <span class="err">__proto__()</span>
-<span class="p">}</span></code></pre></td></tr></table>
+<span class="p">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这里可以发现几个熟悉的方法，如valueOf、toString、toLocaleString；其实这些都是Object的prototype中的方法，而我们使用字面量方式创建的对象实际上在创建时也默认将Object.prototype赋值给了它的<code>__proto__</code>，所以<code>a.__proto__ === Object.prototype</code>为true，这也是为什么所有对象都默认可以使用前面提到的几个方法的原因</p>
-
+</div><p>这里可以发现几个熟悉的方法，如valueOf、toString、toLocaleString；其实这些都是Object的prototype中的方法，而我们使用字面量方式创建的对象实际上在创建时也默认将Object.prototype赋值给了它的<code>__proto__</code>，所以<code>a.__proto__ === Object.prototype</code>为true，这也是为什么所有对象都默认可以使用前面提到的几个方法的原因</p>
 <p>2）new</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
@@ -262,13 +246,11 @@
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
 </span></code></pre></td></tr></table>
 </div>
-</div>
-<p>显然，new和字面量创建对象一样，都是将Object.prototype赋值给了实例的原型对象</p>
-
+</div><p>显然，new和字面量创建对象一样，都是将Object.prototype赋值给了实例的原型对象</p>
 <p>3）Object.create()</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
@@ -276,13 +258,11 @@
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true
 </span></code></pre></td></tr></table>
 </div>
-</div>
-<p>可见，Object.create()是将传入对象直接赋值给了新实例的原型对象属性</p>
-
+</div><p>可见，Object.create()是将传入对象直接赋值给了新实例的原型对象属性</p>
 <p>通过上面的分析可以看出，三种方式创建对象都为实例默认关联了一个原型对象，通过__proto__或者Object.getPrototypeOf()可以获取，如果是字面量模式，则新实例的原型对象即Object.prototype，但是new和Object.create()的话则可以自定义默认关联的原型对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -296,21 +276,20 @@
 <span class="kd">var</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>3、“类”、“构造函数”和“继承”</p>
-
+</div><p>3、“类”、“构造函数”和“继承”</p>
 <p>最后再看一个全面的例子:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Foo</span><span class="p">(){</span>
@@ -322,24 +301,23 @@
 </span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">===</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true  
 </span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">f1</span><span class="p">)</span> <span class="o">===</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true  
 </span><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">f2</span><span class="p">)</span> <span class="o">===</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">//true  
-</span></code></pre></td></tr></table>
+</span><span class="c1"></span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>在JavaScript中经常把首字母大写的function称之为“类”，例如上面的Foo，这里Foo.prototype包含两个属性，constructor属性指向Foo()自身，当我们使用new调用Foo()时，实际上执行了以下几步：<br />
+</div><p>在JavaScript中经常把首字母大写的function称之为“类”，例如上面的Foo，这里Foo.prototype包含两个属性，constructor属性指向Foo()自身，当我们使用new调用Foo()时，实际上执行了以下几步：<br>
 1）创建一个新对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="k">const</span> <span class="nx">f1</span> <span class="o">=</span> <span class="p">{}</span>  
+<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">f1</span> <span class="o">=</span> <span class="p">{}</span>  
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>2）设置新对象的constructor属性为构造函数的名称，设置新对象的__proto__属性指向构造函数的prototype对象：</p>
+</div><p>2）设置新对象的constructor属性为构造函数的名称，设置新对象的__proto__属性指向构造函数的prototype对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
@@ -347,35 +325,25 @@
 <span class="nx">f1</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">=</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span>  
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>3）使用新对象调用函数，函数中的this被指向新实例对象：</p>
+</div><p>3）使用新对象调用函数，函数中的this被指向新实例对象：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="nx">Foo</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">f1</span><span class="p">)</span> 
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>4）将初始化完毕的新对象地址，保存到等号左边的变量中</p>
-
+</div><p>4）将初始化完毕的新对象地址，保存到等号左边的变量中</p>
 <p>很多人习惯称Foo为一个类，它的实例f1的原型对象对Foo的prototype，Foo也有一个__proto__属性，指向的是Object.prototype，根据前面的逻辑，在f1若找不到某个属性，则会在f1.__proto__，也就是Foo.prototype中寻找该属性，如果从f1.__proto__中取不到对应的属性，则会在f1.__proto__.__proto__即Object.prototype中寻找该属性，若还找不到，则返回undefined</p>
-
 <p>这一表现确实和继承很像：有一个顶级的父类Object，所有对象都是它的实例或者它子类的实例，所有这些实例都可以使用这个顶级父类中定义的方法，比如上面的Foo可以理解成继承自Object，其实例f1可以使用Foo.prototype中定义的属性，如果找不到则使用父类Object.prototype中的属性；这虽然看起来很像面向对象编程中的继承，但是JavaScript中实际上没有继承（实际上从new的工作原理看来JavaScript也算不上有类，并没有类实例的拷贝操作），只是通过原型链的方式实现了类似继承的表现</p>
-
 <p>在Java中，所有类都继承自Object，所有的类的实例对象都可以使用Object中的方法，比如hashCode，equals等，但是与JavaScript不同的是，在Java中，继承的含义是指每一个子类中都有父类方法和属性的一份拷贝，在父类中定义了一个方法，子类可以直接使用也可以重写覆盖，但是子类都是调用的自己的属性和方法</p>
-
 <p>而在JavaScript中其实只是建立了对象之间的关联，当在对象自己的属性中找不到想要获取的属性时，就会去关联在它的<code>__proto__</code>属性上的对象中去找，更像是一种委托</p>
-
 <p>4、总结</p>
-
 <p>下面这张图很形象的说明了文中各个角色的关系：</p>
-
-<p><img src = "https://raw.githubusercontent.com/smartzheng/images/master/%E5%8E%9F%E5%9E%8B%E5%92%8C%E5%8E%9F%E5%9E%8B%E9%93%BE.png" width="80%"/></p>
-
-<p>1）每一个函数通过new会创建一个以该函数的prototype为原型对象的实例，可以通过对象的__proto<strong>属性获取该原型对象<br />
-2）函数的prototype中有两个属性，constructor指向自身，具体调用时机和方式参见上文关于new的分析，另一个属性__proto</strong>指向上一级关联的原型对象（最高为Object.prototype）
+<!-- raw HTML omitted -->
+<p>1）每一个函数通过new会创建一个以该函数的prototype为原型对象的实例，可以通过对象的__proto__属性获取该原型对象<br>
+2）函数的prototype中有两个属性，constructor指向自身，具体调用时机和方式参见上文关于new的分析，另一个属性__proto__指向上一级关联的原型对象（最高为Object.prototype）
 3）当实例触发[[Get]]操作时首先从自己内部查找属性，若找不到则依次通过__proto__往上找，从而形成了原型链</p>
 
     </div>
@@ -448,7 +416,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>

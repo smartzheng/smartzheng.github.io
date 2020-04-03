@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/android%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E6%96%B9%E6%A1%88%E5%8E%BB%E5%90%AF%E5%8A%A8%E9%A1%B5%E5%92%8C%E5%BC%82%E6%AD%A5%E5%88%9D%E5%A7%8B%E5%8C%96/" />
-<meta property="article:published_time" content="2019-04-25T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2019-04-25T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2019-04-25T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-04-25T00:00:00+00:00" />
 <meta itemprop="name" content="Android启动优化最佳方案：去启动页和异步初始化">
 <meta itemprop="description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，">
-
-
 <meta itemprop="datePublished" content="2019-04-25T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-04-25T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1662">
+<meta itemprop="wordCount" content="1663">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Android启动优化最佳方案：去启动页和异步初始化"/>
 <meta name="twitter:description" content="项目地址：https://github.com/smartzheng/asyncstarter 随着APP的日渐增大，集成的三方库也越来越多，"/>
 
@@ -135,24 +131,24 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
       <p>项目地址：<a href="https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Fsmartzheng%2Fasyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
-
 <p>随着APP的日渐增大，集成的三方库也越来越多，导致APP的启动极其缓慢。最近在慕课get了一些不错的优化方案，将原来的冷启动时间大概提升30%。
-启动的时间监测可以直接用adb命令实现：
-&gt;adb shell am start -W PackageName/ActivityName</p>
-
-<p>下面是我未优化之前的项目debug版本启动时间（华为p10plus），这里介绍一下几个概念<br />
+启动的时间监测可以直接用adb命令实现：</p>
+<blockquote>
+<p>adb shell am start -W PackageName/ActivityName</p>
+</blockquote>
+<p>下面是我未优化之前的项目debug版本启动时间（华为p10plus），这里介绍一下几个概念<br>
 ThisTime：最后一个Activity启动耗时
 TotalTime：所有Activity启动耗时
-WaitTimeTime：AMS启动Activity启动耗时<br />
+WaitTimeTime：AMS启动Activity启动耗时<br>
 可以看到耗时接近1.3s多（1.3s不算长，但是往往应用加固之后还会慢大一截）。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -162,9 +158,9 @@ WaitTimeTime：AMS启动Activity启动耗时<br />
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
 Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.
 LAUNCHER]cmp=com.smartzheng/.activity.MainActivity }
 Warning: Activity not started, its current task has been brought to the front
@@ -173,15 +169,15 @@ Activity: com.uoko.mlgb/.mvp.view.activity.MainActivity
 ThisTime: 600
 TotalTime: 1301
 WaitTime: 1330
-Complete</pre></td></tr></table>
+Complete
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>优化一：去掉启动页
-IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉之后可以一定幅度减少启动时间。<br />
+</div><p>优化一：去掉启动页
+IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉之后可以一定幅度减少启动时间。<br>
 我的做法是直接删除SplashActivity，将MainActivity设为启动页。然后在manifests中将其theme设为启动时的theme：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -214,13 +210,13 @@ IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉�
         <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.category.DEFAULT&#34;</span><span class="nt">/&gt;</span>
         <span class="nt">&lt;category</span> <span class="na">android:name=</span><span class="s">&#34;android.intent.category.BROWSABLE&#34;</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;/intent-filter&gt;</span>
-<span class="nt">&lt;/activity&gt;</span></code></pre></td></tr></table>
+<span class="nt">&lt;/activity&gt;</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>SplashTheme中windowBackground为启动图片（提一句：这里的windowBackground最好是9patch图片，防止拉伸变形），这样设置还有一个好处是可以解决掉APP启动白屏的问题。</p>
+</div><p>SplashTheme中windowBackground为启动图片（提一句：这里的windowBackground最好是9patch图片，防止拉伸变形），这样设置还有一个好处是可以解决掉APP启动白屏的问题。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -229,31 +225,30 @@ IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉�
 <pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">&#34;SplashTheme&#34;</span> <span class="na">parent=</span><span class="s">&#34;AppThemeFullScreen&#34;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&#34;android:windowBackground&#34;</span><span class="nt">&gt;</span>@drawable/splash<span class="nt">&lt;/item&gt;</span>
     <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&#34;android:windowTranslucentNavigation&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/item&gt;</span>
-<span class="nt">&lt;/style&gt;</span></code></pre></td></tr></table>
+<span class="nt">&lt;/style&gt;</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>最后，在MainActivity的onCreate方法中，手动setTheme更改为Application的默认Theme：</p>
+</div><p>最后，在MainActivity的onCreate方法中，手动setTheme更改为Application的默认Theme：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">(</span><span class="nl">savedInstanceState:</span> <span class="n">Bundle</span><span class="o">?)</span> <span class="o">{</span>
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">override</span> <span class="n">fun</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">:</span> <span class="n">Bundle</span><span class="o">?)</span> <span class="o">{</span>
     <span class="n">setTheme</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">style</span><span class="o">.</span><span class="na">AppTheme</span><span class="o">)</span>
     <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">)</span>
-<span class="o">}</span></code></pre></td></tr></table>
+<span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>评论中有人问到如果去掉闪屏页，那广告位怎么解决？其实广告页面的显示其实用一个单独的Activity实现不是一个好选择，直接调用Activity的addContentView方法就可以添加一个view在activity上面，在倒计时完成之后再removeContentView，这样随时都可以在任意activity上添加广告，通用性和性能都更好。</p>
-
-<p>优化二：异步初始化<br />
+</div><p>评论中有人问到如果去掉闪屏页，那广告位怎么解决？其实广告页面的显示其实用一个单独的Activity实现不是一个好选择，直接调用Activity的addContentView方法就可以添加一个view在activity上面，在倒计时完成之后再removeContentView，这样随时都可以在任意activity上添加广告，通用性和性能都更好。</p>
+<p>优化二：异步初始化<br>
 优化之前，我的Application的onCreate是这样的：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -286,13 +281,13 @@ IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉�
     <span class="n">initSeoReport</span><span class="o">()</span>
     <span class="n">initStrictMode</span><span class="o">()</span>
     <span class="n">initFonts</span><span class="o">()</span>
-<span class="o">}</span></code></pre></td></tr></table>
+<span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>每一项初始化任务都是同步执行的。优化的思想就是将各个初始化任务放到一个线程池中去执行。优化之后代码如下：</p>
+</div><p>每一项初始化任务都是同步执行的。优化的思想就是将各个初始化任务放到一个线程池中去执行。优化之后代码如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -329,24 +324,25 @@ IPC是个比较耗时的操作，往往我们会设置一个闪屏页，去掉�
        <span class="n">start</span><span class="o">()</span>
        <span class="n">await</span><span class="o">()</span>
     <span class="o">}</span>
-<span class="o">}</span></code></pre></td></tr></table>
+<span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>看看优化之后的启动耗时（release环境下），启动速度大概提升了近30%：</p>
+</div><p>看看优化之后的启动耗时（release环境下），启动速度大概提升了近30%：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></pre></td>
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">-&gt; ~ adb shell am start -W com.smartzheng/com.smartzheng.activity.SplashActivity
 Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.
 LAUNCHER]cmp=com.smartzheng/.activity.MainActivity }
 Status: ok
@@ -354,52 +350,52 @@ Activity: com.uoko.mlgb/.mvp.view.activity.MainActivity
 ThisTime: 911
 TotalTime: 911
 WaitTime: 931
-Complete</pre></td></tr></table>
+Complete
+
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>将各个初始化任务放到线程池执行需要解决很多问题：<br />
-部分初始化工作只能在主线程执行<br />
-部分初始化任务需要先执行<br />
-部分初始化任务需要依赖其他任务执行完之后才可以执行<br />
+</div><p>将各个初始化任务放到线程池执行需要解决很多问题：<br>
+部分初始化工作只能在主线程执行<br>
+部分初始化任务需要先执行<br>
+部分初始化任务需要依赖其他任务执行完之后才可以执行<br>
 部分任务必须执行完才能进入Activity页面
 参考课程，将封装的代码放到了<a href="https://github.com/smartzheng/asyncstarter">GitHub</a>，可以直接依赖使用；具体的实现细节在源码中有详细注释。使用方法如下：</p>
-
 <p>1.添加仓库</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">allprojects {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">allprojects {
 	repositories {
 		...
 		maven { url &#39;https://jitpack.io&#39; }
 	}
-}</pre></td></tr></table>
+}
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>2.添加依赖</p>
+</div><p>2.添加依赖</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">dependencies {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">dependencies {
     implementation &#39;com.github.smartzheng:asyncstarter:1.0.1&#39; 
-}</pre></td></tr></table>
+}
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>3.自定义Task</p>
+</div><p>3.自定义Task</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -425,7 +421,7 @@ Complete</pre></td></tr></table>
         <span class="o">}</span>
 
         <span class="n">override</span> <span class="n">fun</span> <span class="nf">dependsOn</span><span class="o">():</span> <span class="n">MutableList</span><span class="o">&lt;</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">out</span> <span class="n">Task</span><span class="o">&gt;&gt;</span> <span class="o">{</span><span class="c1">//等待另一个Task执行完再执行此任务初始化
-</span><span class="c1"></span>            <span class="k">return</span> <span class="n">mutableListOf</span><span class="o">(</span><span class="nl">InitTask1:</span><span class="o">:</span><span class="n">class</span><span class="o">.</span><span class="na">java</span><span class="o">)</span>
+</span><span class="c1"></span>            <span class="k">return</span> <span class="n">mutableListOf</span><span class="o">(</span><span class="n">InitTask1</span><span class="o">::</span><span class="n">class</span><span class="o">.</span><span class="na">java</span><span class="o">)</span>
         <span class="o">}</span>
         <span class="n">override</span> <span class="n">fun</span> <span class="nf">runOnMainThread</span><span class="o">():</span> <span class="n">Boolean</span> <span class="o">{</span><span class="c1">//是否需要运行在主线程
 </span><span class="c1"></span>            <span class="k">return</span> <span class="kc">true</span>
@@ -436,13 +432,13 @@ Complete</pre></td></tr></table>
         <span class="n">override</span> <span class="n">fun</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
             <span class="c1">//初始化
 </span><span class="c1"></span>        <span class="o">}</span>
-    <span class="o">}</span></code></pre></td></tr></table>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>4.在Application中</p>
+</div><p>4.在Application中</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -491,10 +487,10 @@ Complete</pre></td></tr></table>
 </span><span class="c1"></span>            <span class="c1">//                await()
 </span><span class="c1"></span>            <span class="c1">//            }
 </span><span class="c1"></span>        <span class="o">}</span>
-    <span class="o">}</span></code></pre></td></tr></table>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>详细的配置解释和实例可以查看GitHub源码，其中有详细注释，欢迎star：<a href="https://github.com/smartzheng/asyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
+</div><p>详细的配置解释和实例可以查看GitHub源码，其中有详细注释，欢迎star：<a href="https://github.com/smartzheng/asyncstarter">https://github.com/smartzheng/asyncstarter</a></p>
 
     </div>
 
@@ -564,7 +560,7 @@ Complete</pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>

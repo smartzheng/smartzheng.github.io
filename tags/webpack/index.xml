@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>webpack on smartzheng</title>
@@ -21,21 +21,21 @@
     </item>
     
     <item>
-      <title>Webpack学习：plugin</title>
-      <link>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/</link>
-      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/</guid>
-      <description>1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类</description>
-    </item>
-    
-    <item>
       <title>webpack学习： loader</title>
       <link>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/</link>
       <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/</guid>
       <description>1.什么是loader webpack enables use of loaders to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js. Loaders are activated by using loadername! prefixes in require() statements, or are automatically applied via regex from your webpack configuration 在webpack中,通</description>
+    </item>
+    
+    <item>
+      <title>Webpack学习：plugin</title>
+      <link>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/</link>
+      <pubDate>Wed, 07 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/</guid>
+      <description>1.plugin和loader的区别 loader: webpack只能理解JavaScript和JSON文件。loader让webpack能够去处理其他类</description>
     </item>
     
     <item>

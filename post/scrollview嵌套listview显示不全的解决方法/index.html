@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/scrollview%E5%B5%8C%E5%A5%97listview%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="摘要:开发中经常遇到ScrollView嵌套ListView,GridView,或者RecyclerView嵌套RecyclerView的情" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/scrollview%E5%B5%8C%E5%A5%97listview%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" />
-<meta property="article:published_time" content="2017-09-22T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2017-09-22T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2017-09-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-09-22T00:00:00+00:00" />
 <meta itemprop="name" content="ScrollView嵌套ListView显示不全的解决方法">
 <meta itemprop="description" content="摘要:开发中经常遇到ScrollView嵌套ListView,GridView,或者RecyclerView嵌套RecyclerView的情">
-
-
 <meta itemprop="datePublished" content="2017-09-22T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2017-09-22T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1992">
+<meta itemprop="wordCount" content="1993">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ScrollView嵌套ListView显示不全的解决方法"/>
 <meta name="twitter:description" content="摘要:开发中经常遇到ScrollView嵌套ListView,GridView,或者RecyclerView嵌套RecyclerView的情"/>
 
@@ -135,20 +131,18 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
       <p>摘要:开发中经常遇到ScrollView嵌套ListView,GridView,或者RecyclerView嵌套RecyclerView的情况,常常会出现显示不全的现象,下面提供几种不同的解决方法</p>
-
 <p>1.在不是很复杂的布局的情况下,尽量不嵌套,使用添加头布局尾布局的方式进行实现;RecyclerView的添加方式可以参考张鸿洋的博客</p>
-
 <p>2.网上比较流行的是自定义ListView和RecyclerView的LayoutManager
 (1)自定义ListView,GridView,重写onMeasure方法
 ListView:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -159,9 +153,9 @@ ListView:</p>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">public class MyListView extends ListView {  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public class MyListView extends ListView {  
     public MyListView(Context context, AttributeSet attrs) {  
         super(context, attrs);  
     }  
@@ -171,14 +165,14 @@ ListView:</p>
         super.onMeasure(widthMeasureSpec, mExpandSpec);  
     }  
   
-}  </pre></td></tr></table>
+}  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这种方法是将ListView的允许高度设置为极大值,比较简单,但是有一个后果是会造成adapter的getView方法调用多次,也就是多次重绘计算高度.导致的结果就是加载卡顿,如果item中有EditText的话可能会造成数据显示混乱
+</div><p>这种方法是将ListView的允许高度设置为极大值,比较简单,但是有一个后果是会造成adapter的getView方法调用多次,也就是多次重绘计算高度.导致的结果就是加载卡顿,如果item中有EditText的话可能会造成数据显示混乱
 GridView也类似:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -197,9 +191,9 @@ GridView也类似:</p>
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">public class MyGridView extends GridView {  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public class MyGridView extends GridView {  
     public MyGridView(Context context) {  
         super(context);  
     }  
@@ -217,14 +211,14 @@ GridView也类似:</p>
         int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE&gt;&gt;2,MeasureSpec.AT_MOST);  
         super.onMeasure(widthMeasureSpec,expandSpec);  
     }  
-}  </pre></td></tr></table>
+}  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>(2)自定义RecyclerView的LayoutManager
+</div><p>(2)自定义RecyclerView的LayoutManager
 LinearLayoutManager:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">  1
+<pre class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -383,9 +377,9 @@ LinearLayoutManager:</p>
 </span><span class="lnt">157
 </span><span class="lnt">158
 </span><span class="lnt">159
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">public class MyLinearLayoutManager extends LinearLayoutManager {  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public class MyLinearLayoutManager extends LinearLayoutManager {  
   
     private static final String TAG = MyLinearLayoutManager.class.getSimpleName();  
   
@@ -543,14 +537,14 @@ public class MyGridLayoutManager extends GridLayoutManager {  
             }  
         }  
     }  
-}  </pre></td></tr></table>
+}  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>通过LayoutManager去测量条目的宽高然后设置出高度.但是这种方法我在4.1的手机上运行正常,但是在7.0手机上依然显示不全(具体不知道哪个版本以上就不能完全显示);解决方法就是在RecyclerView外面包裹一层RealativeLayout;下面是代码修改前后的对比.
+</div><p>通过LayoutManager去测量条目的宽高然后设置出高度.但是这种方法我在4.1的手机上运行正常,但是在7.0手机上依然显示不全(具体不知道哪个版本以上就不能完全显示);解决方法就是在RecyclerView外面包裹一层RealativeLayout;下面是代码修改前后的对比.
 修改之前,4.1能显示完整,而7.0不能显示完整:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -597,9 +591,11 @@ public class MyGridLayoutManager extends GridLayoutManager {  
 </span><span class="lnt">45
 </span><span class="lnt">46
 </span><span class="lnt">47
-</span></pre></td>
+</span><span class="lnt">48
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">&lt;ScrollView  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+&lt;ScrollView  
         android:layout_width=&#34;match_parent&#34;  
         android:layout_height=&#34;match_parent&#34;&gt;  
    &lt;LinearLayout  
@@ -645,15 +641,15 @@ public class MyGridLayoutManager extends GridLayoutManager {  
                 &lt;/android.support.v7.widget.RecyclerView&gt;  
             &lt;/LinearLayout&gt;  
         &lt;/RelativeLayout&gt;  
-&lt;/ScrollView&gt;  </pre></td></tr></table>
+&lt;/ScrollView&gt;  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>3.手动设置LayoutParams,适用于题目上的任何一种情况
+</div><p>3.手动设置LayoutParams,适用于题目上的任何一种情况
 ListView和RecyclerView都能去获取item,然后测量出高度进行累加得到总高度再设置给自己,如果每条的高度已知并且高度都一致,那可以直接计算(注意加上分割线高度);如果是GridView或者多列RecyclerView.需要除以每行的条目数
 listview:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -664,9 +660,9 @@ listview:</p>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">LinearLayout.LayoutParams params = (LayoutParams) listview.getLayoutParams();  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">LinearLayout.LayoutParams params = (LayoutParams) listview.getLayoutParams();  
 int totalHeight = 0;  
 for (int i = 0; i &lt; list.size(); i++) {//list为数据集合,也可以通过adapter.getCount()得到  
     View listItem = buyAdapter.getView(i, null, listview);  
@@ -676,13 +672,13 @@ for (int i = 0; i &lt; list.size(); i++) {//list为数据集合,也可�
 }  
 float dividerHeight = listview.getDividerHeight();  
 params.height = (int) ((list.size()-1)*dividerHeight+totalHeight);  
-listview.setLayoutParams(params);  </pre></td></tr></table>
+listview.setLayoutParams(params);  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>RecyclerView:</p>
+</div><p>RecyclerView:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -693,9 +689,9 @@ listview.setLayoutParams(params);  </pre></td></tr></table>
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">**[java]** [view plain](http://blog.csdn.net/kinly1993/article/details/54616348#) [copy](http://blog.csdn.net/kinly1993/article/details/54616348#)
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">**[java]** [view plain](http://blog.csdn.net/kinly1993/article/details/54616348#) [copy](http://blog.csdn.net/kinly1993/article/details/54616348#)
 
 int h = 0;  
 for (int i = 0; i &lt; list.size(); i++) {  
@@ -705,13 +701,13 @@ for (int i = 0; i &lt; list.size(); i++) {  
 }  
 ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();  
 layoutParams.height = h;  
-recyclerView.setLayoutParams(layoutParams);  </pre></td></tr></table>
+recyclerView.setLayoutParams(layoutParams);  
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>注意:当视图未初始化完成时直接设置会报空指针,比如在onCreate方法中去设置,因为itemView还没有完全初始化,这时候可以通过设置view渲染完成的监听实现,以RecyclerView为例:</p>
+</div><p>注意:当视图未初始化完成时直接设置会报空指针,比如在onCreate方法中去设置,因为itemView还没有完全初始化,这时候可以通过设置view渲染完成的监听实现,以RecyclerView为例:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -726,9 +722,9 @@ recyclerView.setLayoutParams(layoutParams);  </pre></td></tr></table>
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">rootview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {//rootView为根ViewGroup  
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">rootview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {//rootView为根ViewGroup  
     @Override  
     public void onGlobalLayout() {  
         rootview.getViewTreeObserver().removeGlobalOnLayoutListener(this);  
@@ -742,7 +738,8 @@ recyclerView.setLayoutParams(layoutParams);  </pre></td></tr></table>
         layoutParams.height = h;  
         rv.setLayoutParams(layoutParams);  
     }  
-});   </pre></td></tr></table>
+});   
+</code></pre></td></tr></table>
 </div>
 </div>
     </div>
@@ -813,7 +810,7 @@ recyclerView.setLayoutParams(layoutParams);  </pre></td></tr></table>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>

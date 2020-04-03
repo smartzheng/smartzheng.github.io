@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%97%AD%E5%8C%85/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3javascript%E4%B9%8B%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%97%AD%E5%8C%85/" />
-<meta property="article:published_time" content="2019-08-23T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2019-08-23T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2019-08-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-08-23T00:00:00+00:00" />
 <meta itemprop="name" content="深入理解JavaScript之作用域闭包">
 <meta itemprop="description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，">
-
-
 <meta itemprop="datePublished" content="2019-08-23T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-08-23T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="3123">
+<meta itemprop="wordCount" content="3122">
 
 
 
-<meta itemprop="keywords" content="JavaScript," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="JavaScript," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="深入理解JavaScript之作用域闭包"/>
 <meta name="twitter:description" content="在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，"/>
 
@@ -135,20 +131,17 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
-      <p><strong><em>在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，所以闭包在Java中并不是一个很需要讨论的问题，虽然Java开发（尤其是Android开发）中内存泄漏的原因和JS中因为闭包导致的内存泄漏很类似。</em></strong></p>
-
-<p><strong><em>而JavaScript中，闭包无处不在，不过鲜有开发者能透彻地领悟它的意义。之前学习JS时，参考的是《JavaScript高级程序设计》，关于闭包，这本书讲的不可谓不深入，但总感觉理解的不是那么全面，似懂非懂，最近又仔细结合《你不知道的JavaScript》进一步加深了理解。</em></strong></p>
-
+      <p><em><strong>在Java中，由于1.8之前函数并不能被当做参数传递，而且Java中变量声明可以看做是类似于ES6中的let const，自动拥有块级作用域，所以闭包在Java中并不是一个很需要讨论的问题，虽然Java开发（尤其是Android开发）中内存泄漏的原因和JS中因为闭包导致的内存泄漏很类似。</strong></em></p>
+<p><em><strong>而JavaScript中，闭包无处不在，不过鲜有开发者能透彻地领悟它的意义。之前学习JS时，参考的是《JavaScript高级程序设计》，关于闭包，这本书讲的不可谓不深入，但总感觉理解的不是那么全面，似懂非懂，最近又仔细结合《你不知道的JavaScript》进一步加深了理解。</strong></em></p>
 <p><strong>何为闭包</strong></p>
-
 <p>先来看这个来自《JavaScript高级程序设计》中的例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -178,22 +171,18 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>在上面代码中，方法createComparisonFunction返回了一个匿名方法，匿名方法中使用到了传入createComparisonFunction的参数propertyName，也就是等于说内部的匿名函数访问了外部函数中的变量。<br />
+</div><p>在上面代码中，方法createComparisonFunction返回了一个匿名方法，匿名方法中使用到了传入createComparisonFunction的参数propertyName，也就是等于说内部的匿名函数访问了外部函数中的变量。<br>
 之所以能访问外部作用域中的变量，是因为该函数的作用域链中包含了外部函数的作用域，当自身作用域中找不到该变量名对应的变量时，会在其上一级作用域中查找，以此往复，这一点熟悉作用域链的人都知道，不过这里还是细讲一下：</p>
-
 <ul>
-<li>每个执行环境都会包含一个表示变量的对象，对于全局环境而言，也就是全局变量对象（window），而函数执行环境中同样也包含一个活动的变量对象（简称活动对象，之所以是活动的，是因为正常情况下它在函数执行完后会被销毁）用于表示该执行环境中的变量<br /></li>
+<li>每个执行环境都会包含一个表示变量的对象，对于全局环境而言，也就是全局变量对象（window），而函数执行环境中同样也包含一个活动的变量对象（简称活动对象，之所以是活动的，是因为正常情况下它在函数执行完后会被销毁）用于表示该执行环境中的变量</li>
 <li>当在全局环境中创建一个函数时，会自动创建一个作用域链，并且其中预先包含全局变量对象，这个作用域链被保存在函数的[[Scope]]属性中</li>
 <li>当调用该函数时，会为函数创建一个执行环境（同时创建了函数对应的活动对象，执行环境的范围也就是函数的作用域），并且复制[[Scope]]属性中的对象，作为该执行环境的作用域链；然后将函数对应的活动对象push到作用域链的前端</li>
 </ul>
-
 <p><strong>有几个需要注意的概念：变量对象、作用域、作用域链、执行环境</strong></p>
-
 <p>看个例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -217,20 +206,17 @@
 <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">compare</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>根据以上规则，我们可以这么去解释上面的代码:</p>
-
+</div><p>根据以上规则，我们可以这么去解释上面的代码:</p>
 <ul>
 <li>在全局环境中有个全局变量对象window，它包含了value1、compare、result的引用；</li>
 <li>在声明compare方法时，创建了一个作用域链，其中预先包含了全局变量对象，它被保存到了compare的[[Scope]]属性中</li>
 <li>调用<code>compare(5, 10)</code>时，会为compare函数创建一个执行环境，并且创建一个活动对象用以保存此执行环境中的变量（即代码中的），复制compare的[[Scope]]属性对应的作用域链作为该执行环境的作用域链，并且将活动对象推入作用域链的前端</li>
 <li>当函数执行时，当需要使用到某一个变量时，会在函数的作用域链中去查找该变量，首先会查找作用域链前端的活动对象中是否包含该变量的引用，如果没有在继续查找作用域链的下一层（这里即全局变量对象），以次类推</li>
 </ul>
-
 <p>正常情况下，函数执行完毕后，其执行环境的作用域会被销毁，活动对象也应该被销毁。但是在闭包中，表现却有所差异；接下来，我们在全局环境中调用createComparisonFunction函数：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
@@ -238,18 +224,14 @@
  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">compare</span><span class="p">({</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;Nicholas&#34;</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s2">&#34;Greg&#34;</span> <span class="p">});</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>这里的compare被赋值为createComparisonFunction方法中的匿名函数，在执行<code>compare({ name: &quot;Nicholas&quot; }, { name: &quot;Greg&quot; })</code>时，compare函数执行在全局作用域中，但compare函数内部访问了createComparisonFunction函数作用域下的变量propertyName（即第一行传入的&rdquo;name&rdquo;）；同时，compare保存了createComparisonFunction函数作用域中的变量；这就出现了闭包。</p>
-
+</div><p>这里的compare被赋值为createComparisonFunction方法中的匿名函数，在执行<code>compare({ name: &quot;Nicholas&quot; }, { name: &quot;Greg&quot; })</code>时，compare函数执行在全局作用域中，但compare函数内部访问了createComparisonFunction函数作用域下的变量propertyName（即第一行传入的&quot;name&rdquo;）；同时，compare保存了createComparisonFunction函数作用域中的变量；这就出现了闭包。</p>
 <p>一个完整的定义：<strong>当函数可以记住并访问所在的词法作用域，即使函数实在当前词法作用域之外执行，这时就产生了闭包</strong>（《你不知道的JavaScript上卷》）</p>
-
 <p>在上面的例子中，在全局环境下调用compare方法，实际上是把createComparisonFunction内部的匿名函数对象的引用赋值给了window，window不会被销毁，因此它持有的compare不会被销毁，所以createComparisonFunction执行完毕后，compare中使用到的propertyName同样不会被销毁。可以手动将compare置为null来让垃圾回收器回收</p>
-
-<p><strong>以上的解释主要来自《JavaScript高级程序设计》，直观的看，闭包似乎就是在函数中返回函数，然后在别的地方调用该函数，这个说法不可谓不对，但并不全面。下面结合《你不知道的JavaScript》来做进一步解释，可能会更理解为什么说闭包无处不在</strong><br />
+<p><strong>以上的解释主要来自《JavaScript高级程序设计》，直观的看，闭包似乎就是在函数中返回函数，然后在别的地方调用该函数，这个说法不可谓不对，但并不全面。下面结合《你不知道的JavaScript》来做进一步解释，可能会更理解为什么说闭包无处不在</strong><br>
 其次，个人感觉《JavaScript高级程序设计》中的闭包例子有点绕，这里附一段更简单闭包代码：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -271,11 +253,10 @@
 <span class="nx">baz</span><span class="p">();</span> <span class="c1">// 2 —— 这就是闭包的效果,foo中的a被保存了
 </span></code></pre></td></tr></table>
 </div>
-</div>
-<p>好了，下面再看个IIFE的例子</p>
+</div><p>好了，下面再看个IIFE的例子</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -287,15 +268,12 @@
 <span class="p">})();</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>这是闭包吗？</p>
-
+</div><p>这是闭包吗？</p>
 <p>从技术层面讲，它确实创建了闭包，因为<strong>函数IIFE可以记住并访问所在的词法作用域</strong>，但是IIFE并不是在自身的作用域外执行，所以，严格来讲，这并不是闭包</p>
-
 <p>再看个更熟悉的例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -311,15 +289,12 @@
 <span class="nx">wait</span><span class="p">(</span><span class="s2">&#34;Hello World&#34;</span><span class="p">);</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>在wait函数内部，将timer函数作为参数传递给setTimeout方法，timer中保存了外部作用域中的message，并且timer函数最终是被引擎调用，它执行所在的作用域并不是wait下的作用域，所以显然这里产生了闭包。</p>
-
+</div><p>在wait函数内部，将timer函数作为参数传递给setTimeout方法，timer中保存了外部作用域中的message，并且timer函数最终是被引擎调用，它执行所在的作用域并不是wait下的作用域，所以显然这里产生了闭包。</p>
 <p><strong>如果将函数(函数访问了它们各自的词法作用域)当做第一级的值类型并到处传递，你就会看到闭包在这些函数中的应用。在定时器、事件监听器、Ajax 请求、跨窗口通信、Web Workers或者任何其他的异步(或者同步)任务中，只要使用了回调函数，实际上就是在使用闭包!</strong>（《你不知道的JavaScript上卷》）</p>
-
-<p><strong><em>理解了闭包之后，接下来再看一下闭包与循环的问题</em></strong></p>
+<p><em><strong>理解了闭包之后，接下来再看一下闭包与循环的问题</strong></em></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -333,15 +308,12 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>类似的代码在Java或其他类C语言中，都会每隔一秒顺序打印出1到5，但在这里却输出了5个6，这也是闭包所致</p>
-
+</div><p>类似的代码在Java或其他类C语言中，都会每隔一秒顺序打印出1到5，但在这里却输出了5个6，这也是闭包所致</p>
 <p>在5次for循环中，其实依次创建了5个timer，由于闭包的存在，每个timer中都保存了所在作用域中的i变量，并且它们都是同一个变量，for循环结束后i为6，此时每个timer中保存的值也都变为了6</p>
-
 <p>那为什么在Java中不会出现这种情况呢？原因是Java中的变量默认带有块级作用域，等于是说循环中的i与timer中的i其实是两个变量，JS中可以这样实现同样的效果：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -361,11 +333,10 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>在for循环中通过一个IIFE创建一个新的作用域，那么该作用域中的i也就与外部作用域中的i无关了，便于理解，可以把内部的i换为j：</p>
+</div><p>在for循环中通过一个IIFE创建一个新的作用域，那么该作用域中的i也就与外部作用域中的i无关了，便于理解，可以把内部的i换为j：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -385,13 +356,11 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>i和j是两个无关变量，timer中保存的j只是被赋值为每一次for循环对应的i的值</p>
-
+</div><p>i和j是两个无关变量，timer中保存的j只是被赋值为每一次for循环对应的i的值</p>
 <p>上面的写法是对块级作用域的模仿，ES6中的let也提供块级作用域：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -407,11 +376,10 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>或</p>
+</div><p>或</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -496,7 +464,7 @@
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>

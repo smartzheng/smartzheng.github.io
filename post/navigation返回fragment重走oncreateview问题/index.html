@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/navigation%E8%BF%94%E5%9B%9Efragment%E9%87%8D%E8%B5%B0oncreateview%E9%97%AE%E9%A2%98/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="在使用Navigation的过程中，发现其页面跳转效率确实很不错，XML管理页面跳转逻辑以及fragment之间的参数传递使用起来都很方便，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/navigation%E8%BF%94%E5%9B%9Efragment%E9%87%8D%E8%B5%B0oncreateview%E9%97%AE%E9%A2%98/" />
-<meta property="article:published_time" content="2019-05-31T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2019-05-31T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2019-05-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-05-31T00:00:00+00:00" />
 <meta itemprop="name" content="Navigation返回Fragment重走onCreateView问题">
 <meta itemprop="description" content="在使用Navigation的过程中，发现其页面跳转效率确实很不错，XML管理页面跳转逻辑以及fragment之间的参数传递使用起来都很方便，">
-
-
 <meta itemprop="datePublished" content="2019-05-31T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-05-31T00:00:00&#43;00:00" />
 <meta itemprop="wordCount" content="550">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Navigation返回Fragment重走onCreateView问题"/>
 <meta name="twitter:description" content="在使用Navigation的过程中，发现其页面跳转效率确实很不错，XML管理页面跳转逻辑以及fragment之间的参数传递使用起来都很方便，"/>
 
@@ -135,18 +131,17 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
       <blockquote>
 <p>在使用Navigation的过程中，发现其页面跳转效率确实很不错，XML管理页面跳转逻辑以及fragment之间的参数传递使用起来都很方便，但是一个很大的问题就是在fragment出栈返回上一页时，上一个fragment会重走onCreateView方法。而我们的很多view和数据初始化工作都是在onViewCreated之后进行的，导致的结果是每次回上一个页面可能会重新刷新，这一点体验很差。这里提供一个方法来避免每次重新创建view。</p>
 </blockquote>
-
 <p>编写一个BaseNavigationFragment:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt"> 1
+<pre class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -166,9 +161,9 @@
 </span><span class="lnt">18
 </span><span class="lnt">19
 </span><span class="lnt">20
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">class BaseNavigationFragment : BaseFragment() {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">class BaseNavigationFragment : BaseFragment() {
     protected var isNavigationViewInit = false//记录是否已经初始化过一次视图
     private var lastView: View? = null//记录上次创建的view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -187,10 +182,10 @@
             isNavigationViewInit = true
         }
     }
-}</pre></td></tr></table>
+}
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>核心思路在上面的注释，即保存上次创建的view，返回上一页再次走onCreateView时直接将其返回，并且在onViewCreated方法中不再进行初始化工作。<br />
+</div><p>核心思路在上面的注释，即保存上次创建的view，返回上一页再次走onCreateView时直接将其返回，并且在onViewCreated方法中不再进行初始化工作。<br>
 leak canary可能会提示lastView内存泄漏，忽略即可。</p>
 
     </div>
@@ -261,7 +256,7 @@ leak canary可能会提示lastView内存泄漏，忽略即可。</p>
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>

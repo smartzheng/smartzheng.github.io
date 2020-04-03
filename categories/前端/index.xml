@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>前端 on smartzheng</title>
+    <link>https://smartzheng.github.io/categories/%E5%89%8D%E7%AB%AF/</link>
+    <description>Recent content in 前端 on smartzheng</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://smartzheng.github.io/categories/%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>前端优化技巧</title>
+      <link>https://smartzheng.github.io/post/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://smartzheng.github.io/post/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/</guid>
+      <description>HTML/CSS优化技巧 1 . 能用HTML/CSS解决的问题就不用JS 在熟练使用HTML/CSS的条件下, 同样的功能肯定是前者实现更简洁快速,</description>
+    </item>
+    
+  </channel>
+</rss>

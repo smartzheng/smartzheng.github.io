@@ -23,7 +23,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.3 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%BF%9B%E9%98%B6%E7%9F%A5%E8%AF%86%E7%82%B9/" />
@@ -42,21 +42,17 @@
 <meta property="og:description" content="1.Tree Shaking 移除JavaScript上下文中的未引用代码(dead-code)，需要将mode选项设置为production开启，且只支持ES Module 配置" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://smartzheng.github.io/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%BF%9B%E9%98%B6%E7%9F%A5%E8%AF%86%E7%82%B9/" />
-<meta property="article:published_time" content="2019-08-08T00:00:00&#43;00:00"/>
-<meta property="article:modified_time" content="2019-08-08T00:00:00&#43;00:00"/>
-
+<meta property="article:published_time" content="2019-08-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-08-08T00:00:00+00:00" />
 <meta itemprop="name" content="webpack学习：进阶知识点">
 <meta itemprop="description" content="1.Tree Shaking 移除JavaScript上下文中的未引用代码(dead-code)，需要将mode选项设置为production开启，且只支持ES Module 配置">
-
-
 <meta itemprop="datePublished" content="2019-08-08T00:00:00&#43;00:00" />
 <meta itemprop="dateModified" content="2019-08-08T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="1255">
+<meta itemprop="wordCount" content="1256">
 
 
 
-<meta itemprop="keywords" content="webpack," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="webpack," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="webpack学习：进阶知识点"/>
 <meta name="twitter:description" content="1.Tree Shaking 移除JavaScript上下文中的未引用代码(dead-code)，需要将mode选项设置为production开启，且只支持ES Module 配置"/>
 
@@ -136,118 +132,98 @@
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#1-tree-shaking">1.Tree Shaking</a></li>
-<li><a href="#2-codesplitting">2.codeSplitting</a>
-<ul>
-<li><a href="#js代码分割">js代码分割</a></li>
-<li><a href="#css代码优化">CSS代码优化</a></li>
-</ul></li>
-<li><a href="#3-打包分析常用工具">3.打包分析常用工具</a></li>
-<li><a href="#4-webpack与浏览器缓存">4.webpack与浏览器缓存</a></li>
-<li><a href="#5-shimming">5.Shimming</a></li>
-<li><a href="#6-library基本配置">6.Library基本配置</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1tree-shaking">1.Tree Shaking</a></li>
+        <li><a href="#2codesplitting">2.codeSplitting</a></li>
+        <li><a href="#3打包分析常用工具">3.打包分析常用工具</a></li>
+        <li><a href="#4webpack与浏览器缓存">4.webpack与浏览器缓存</a></li>
+        <li><a href="#5shimming">5.Shimming</a></li>
+        <li><a href="#6library基本配置">6.Library基本配置</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
   </div>
 </div>
     <div class="post-content">
-      
-
-<h3 id="1-tree-shaking">1.Tree Shaking</h3>
-
-<p>移除JavaScript上下文中的未引用代码(dead-code)，需要将mode选项设置为production开启，且只支持ES Module<br />
+      <h3 id="1tree-shaking">1.Tree Shaking</h3>
+<p>移除JavaScript上下文中的未引用代码(dead-code)，需要将mode选项设置为production开启，且只支持ES Module<br>
 配置：</p>
-
 <ul>
-<li>package.json-&gt;useExports:true/false true为开启<br /></li>
+<li>package.json-&gt;useExports:true/false true为开启</li>
 <li>sideEffects:false/[]，false为对所有文件都开启Tree Shaking，但在导入时会执行特殊行为的代码，而不是仅仅暴露一个export或多个export。例如<code>import '@bable/poly-fill'</code>，它影响全局作用域，并且通常不提供export。这时需要手动加到sideEffects数组中防止被删除。</li>
 </ul>
-
-<h3 id="2-codesplitting">2.codeSplitting</h3>
-
+<h3 id="2codesplitting">2.codeSplitting</h3>
 <h4 id="js代码分割">js代码分割</h4>
-
-<p>概念：代码分割，与webpack无关，但webpack可以帮助开发者自动进行代码分割<br />
-两种方式：<br />
-1.optimization配置<br />
-2.异步import会自动被代码分割<br />
+<p>概念：代码分割，与webpack无关，但webpack可以帮助开发者自动进行代码分割<br>
+两种方式：<br>
+1.optimization配置<br>
+2.异步import会自动被代码分割<br>
 webpack中结合SplitChunksPlugin实现代码分割</p>
-
-<p><strong>为什么webpack中splitChunks默认只针对async引入的代码？</strong><br />
-js优化两个方向：缓存和代码使用率<br />
-缓存: splitChunks:&lsquo;all&rsquo; 相同chunk代码不重复加载；提升较小，因为只能提高第二次访问时的速度<br />
+<p><strong>为什么webpack中splitChunks默认只针对async引入的代码？</strong><br>
+js优化两个方向：缓存和代码使用率<br>
+缓存: splitChunks:&lsquo;all&rsquo; 相同chunk代码不重复加载；提升较小，因为只能提高第二次访问时的速度<br>
 代码使用（覆盖）率（coverage）: preLoading（初始页面同时预加载）、preFetching（网络空闲预加载） 提升较大</p>
-
 <h4 id="css代码优化">CSS代码优化</h4>
-
-<p>分割：MiniCssExtractPlugin(不支持HMR，适合使用在production)<br />
+<p>分割：MiniCssExtractPlugin(不支持HMR，适合使用在production)<br>
 压缩：OptimizeCSSAssetsPlugin</p>
-
-<h3 id="3-打包分析常用工具">3.打包分析常用工具</h3>
-
+<h3 id="3打包分析常用工具">3.打包分析常用工具</h3>
 <p>webpack/analyse，bundle analysis</p>
-
-<h3 id="4-webpack与浏览器缓存">4.webpack与浏览器缓存</h3>
-
+<h3 id="4webpack与浏览器缓存">4.webpack与浏览器缓存</h3>
 <p>由于浏览器缓存的原因，若每次打包生成的文件名都一样，那有可能新代码上线后浏览器还是访问的本地缓存，可以output配置name和chunkFilename时加上contenthash标识：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">output: {
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">output: {
 	filename: &#39;[name].[contenthash].js&#39;,
 	chunkFilename: &#39;[name].[contenthash].js&#39;
-}</pre></td></tr></table>
+}
+</code></pre></td></tr></table>
 </div>
-</div>
-<h3 id="5-shimming">5.Shimming</h3>
-
-<p>更改部分代码的默认行为<br />
-如：modules为true的情况下，每个模块都有自己的运行环境，被引入的module无法使用引入该模块的module中导入的变量，在plugins中配置webpack.ProviderPlugin可以实现插入变量的功能。<br />
-举例说明：<br />
+</div><h3 id="5shimming">5.Shimming</h3>
+<p>更改部分代码的默认行为<br>
+如：modules为true的情况下，每个模块都有自己的运行环境，被引入的module无法使用引入该模块的module中导入的变量，在plugins中配置webpack.ProviderPlugin可以实现插入变量的功能。<br>
+举例说明：<br>
 a.js引入b.js，a.js中import了jquery，b中需要使用到jquery，正常模式下必须在b中再次导入jquery，但是针对于某些第三方模块，我们无法去改变它的默认代码，这个时候可以在webpack.config.js中配置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
-</span></pre></td>
+</span></code></pre></td>
 <td class="lntd">
-<pre class="chroma">plugins:[
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">plugins:[
 	new webpack.ProvidePlugin({
 		$: &#39;jquery&#39;
 	}),
-]</pre></td></tr></table>
+]
+</code></pre></td></tr></table>
 </div>
-</div>
-<p>这样，被引入的模块中的$都能在不用添加导入jquery代码而被正确使用。</p>
-
-<h3 id="6-library基本配置">6.Library基本配置</h3>
+</div><p>这样，被引入的模块中的$都能在不用添加导入jquery代码而被正确使用。</p>
+<h3 id="6library基本配置">6.Library基本配置</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="lnt">1
+<pre class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="p">...</span>
+<pre class="chroma"><code class="language-javascript" data-lang="javascript">
+<span class="p">...</span>
 <span class="nx">externals</span><span class="o">:</span><span class="s1">&#39;lodash&#39;</span><span class="p">,</span>
 <span class="nx">output</span><span class="o">:</span><span class="p">{</span>
 	<span class="p">...</span>
@@ -256,8 +232,7 @@ a.js引入b.js，a.js中import了jquery，b中需要使用到jquery，正常模�
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div>
-<p>externals代表被引入使用时定义的名字，libraryTarget中，umd代表打包生成的库可以通过各种方式引入（import、require等），配置为window、this、global则将该库的导出变量作为libraryTarget的一个变量</p>
+</div><p>externals代表被引入使用时定义的名字，libraryTarget中，umd代表打包生成的库可以通过各种方式引入（import、require等），配置为window、this、global则将该库的导出变量作为libraryTarget的一个变量</p>
 
     </div>
 
@@ -286,8 +261,8 @@ a.js引入b.js，a.js中import了jquery，b中需要使用到jquery，正常模�
             <span class="prev-text nav-default">React Hooks学习：优势及使用</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
-        <a class="next" href="/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bplugin/">
-            <span class="next-text nav-default">Webpack学习：plugin</span>
+        <a class="next" href="/post/webpack%E5%AD%A6%E4%B9%A0%E4%B9%8Bloader/">
+            <span class="next-text nav-default">webpack学习： loader</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>
@@ -329,7 +304,7 @@ a.js引入b.js，a.js中import了jquery，b中需要使用到jquery，正常模�
   <span class="copyright-year">
     &copy; 
     2017 - 
-    2019
+    2020
     
   </span>
 </div>
